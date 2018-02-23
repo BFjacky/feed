@@ -9,5 +9,18 @@ module.exports = appInfo => {
   // add your config here
   config.middleware = [];
 
+  config.mongoose = {
+    url: 'mongodb://127.0.0.1/xn_feed',
+    options: {},
+  };
+
+  config.qiniu2 = {
+    client: {
+      ak: 'rVFSjXPW6BUAcPrHAjwDJBT5kfm7T-hIgTlHSj82',
+      sk: 'ux9tk7GcTWlrtZJjYOmAgcbK6M_ysCXIoeYTo3jL',
+      bucket: 'xn-feed-dev',
+    },
+  };
+
   return config;
 };

@@ -5,7 +5,10 @@
   "private": true,
   "dependencies": {
     "egg": "^2.2.1",
-    "egg-scripts": "^2.5.0"
+    "egg-mongoose": "^2.1.1",
+    "egg-qiniu2": "^1.0.2",
+    "egg-scripts": "^2.5.0",
+    "moment": "^2.20.1"
   },
   "devDependencies": {
     "autod": "^3.0.1",
