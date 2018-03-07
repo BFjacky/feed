@@ -8,4 +8,6 @@ module.exports = app => {
   router.get('/', controller.home.index);
 
   router.post('/file/transfer', controller.file.transfer);
+
+  router.post('/thread/newThread', controller.thread.newThread);
 };
