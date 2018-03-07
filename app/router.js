@@ -7,5 +7,5 @@ module.exports = app => {
   const { router, controller } = app;
   router.get('/', controller.home.index);
 
-  router.get('/file/transfer', controller.file.transfer);
+  router.post('/file/transfer', controller.file.transfer);
 };

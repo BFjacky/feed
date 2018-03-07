@@ -4,6 +4,7 @@ module.exports = app => {
   const mongoose = app.mongoose;
   const { Schema } = mongoose;
   const ThreadSchema = new mongoose.Schema({
+    uid: Schema.Types.ObjectId,
     audio: {
       aid: Schema.Types.ObjectId, // attachment id
       duration: Number, // 语音时长，单位秒

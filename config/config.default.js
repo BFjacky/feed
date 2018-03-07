@@ -15,10 +15,20 @@ module.exports = appInfo => {
   };
 
   config.qiniu2 = {
+    domain: 'http://static.xiaonei.io',
+    urlKey1: '7b990a8b439a169bde9bc2885498fb894688d0ab',
+    urlKey2: '39bb21b95fabaabb948bf28bdc982b996fbb6aa8',
     client: {
       ak: 'rVFSjXPW6BUAcPrHAjwDJBT5kfm7T-hIgTlHSj82',
       sk: 'ux9tk7GcTWlrtZJjYOmAgcbK6M_ysCXIoeYTo3jL',
-      bucket: 'xn-feed-dev',
+      bucket: 'xiaonei',
+    },
+  };
+
+  // ignore csrf
+  config.security = {
+    csrf: {
+      ignoreJSON: true, // 默认为 false，当设置为 true 时，将会放过所有 content-type 为 `application/json` 的请求
     },
   };
 
