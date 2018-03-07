@@ -18,7 +18,6 @@ class FileController extends Controller {
     };
     const putPolicy = new qiniu2.rs.PutPolicy(options);
     const token = putPolicy.uploadToken(qiniu2.mac);
-    console.log(token);
     this.ctx.body = { token };
   }
 }
