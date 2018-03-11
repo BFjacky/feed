@@ -6,21 +6,33 @@ module.exports = appInfo => {
   // use for cookie sign key, should change to your own and keep security
   config.keys = appInfo.name + '_1519273404542_1221';
 
-  // add your config here
-  config.middleware = [];
-
   config.mongoose = {
     url: 'mongodb://127.0.0.1/xn_feed',
     options: {},
   };
 
+  config.redis = {
+    client: {
+      port: 6379,
+      host: '127.0.0.1',
+      password: '',
+      db: 0,
+    },
+  };
+
   config.qiniu2 = {
+    domain: 'http://static.xiaonei.io',
+    urlKey1: '7b990a8b439a169bde9bc2885498fb894688d0ab',
+    urlKey2: '39bb21b95fabaabb948bf28bdc982b996fbb6aa8',
     client: {
       ak: 'rVFSjXPW6BUAcPrHAjwDJBT5kfm7T-hIgTlHSj82',
       sk: 'ux9tk7GcTWlrtZJjYOmAgcbK6M_ysCXIoeYTo3jL',
-      bucket: 'xn-feed-dev',
+      bucket: 'xiaonei',
     },
   };
+
+  // middlewares
+  config.middleware = [ 'userHandler' ];
 
   // ignore csrf
   config.security = {
@@ -30,7 +42,13 @@ module.exports = appInfo => {
     xframe: {
       enable: false,
     },
+    domainWhiteList: [ 'http://myccc.feit.me' ],
   };
 
+  // urls
+  config.url = {
+    token_account: 'https://account.xiaonei.io/user/get?aid=',
+    token_jwcxn: 'https://jwc.xiaonei.io/student/get?aid=',
+  };
   return config;
 };

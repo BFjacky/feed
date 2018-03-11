@@ -4,11 +4,16 @@
   "description": "feed system for xiaonei",
   "private": true,
   "dependencies": {
+    "axios": "^0.18.0",
     "egg": "^2.2.1",
+    "egg-cors": "^2.0.0",
     "egg-mongoose": "^2.1.1",
-    "egg-qiniu2": "^1.0.2",
+    "egg-qiniu2": "^1.0.3",
+    "egg-redis": "^2.0.0",
     "egg-scripts": "^2.5.0",
-    "moment": "^2.20.1"
+    "moment": "^2.20.1",
+    "sha1": "^1.1.1",
+    "wechat-jssdk": "^3.0.11"
   },
   "devDependencies": {
     "autod": "^3.0.1",

@@ -12,13 +12,25 @@ class FileController extends Controller {
     const ext = filename.split('.').pop();
     const key = `${from}/${moment().format('YYYYMMDD')}/${md5}.${ext}`;
 
+    const { domain, urlKey1 } = this.app.config.qiniu2;
+
+    // FIXME
+    const deadline = 1577811600;
+
+    const cdnManager = new qiniu2.cdn.CdnManager(null);
+    const sourceUrl = cdnManager.createTimestampAntiLeechUrl(domain, key, null, urlKey1, deadline);
+    const url = cdnManager.createTimestampAntiLeechUrl(domain, key + '/w200', null, urlKey1, deadline);
+
     const { bucket } = this.app.config.qiniu2.client;
     const options = {
       scope: `${bucket}:${key}`,
+      returnBody: `{"key":"$(key)","sourceUrl":"${sourceUrl}","url":"${url}","fsize":$(fsize),"code": 0}`,
     };
+
     const putPolicy = new qiniu2.rs.PutPolicy(options);
     const token = putPolicy.uploadToken(qiniu2.mac);
-    this.ctx.body = { token };
+
+    this.ctx.body = { key, token };
   }
 }
 

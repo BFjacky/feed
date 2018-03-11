@@ -12,3 +12,14 @@ exports.qiniu2 = {
   enable: true,
   package: 'egg-qiniu2',
 };
+
+
+exports.redis = {
+  enable: true,
+  package: 'egg-redis',
+};
+
+exports.cors = {
+  enable: true,
+  package: 'egg-cors',
+};
