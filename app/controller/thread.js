@@ -8,12 +8,18 @@ class ThreadController extends Controller {
   }
   async newThread() {
     const { thread } = this.ctx.request.body;
-    const user = this.ctx.middleUser;
-    // console.log(thread, this.ctx.middleUser);
-    const threadData = new this.ctx.model.Thread({ uid: user._id, avatorUrl: user.avatorUrl, content: thread.content, imgs: thread.imgs, tpcode: thread.tpcode });
+    const { feedCookie, user } = this.ctx;
+    if (!user) {
+      this.ctx.body = { success: false, message: '未获得到user' };
+      return;
+    }
+    if (!user.openid) {
+      this.ctx.body = { success: false, message: '未获得到openid' };
+      return;
+    }
+    const threadData = new this.ctx.model.Thread({ openid: user.openid, content: thread.content, imgs: thread.imgs, themeText: thread.themeText });
     await threadData.save();
-    console.log(thread);
-    this.ctx.body = '发布了一个新的thread';
+    this.ctx.body = { success: true };
   }
   async newComment() {
     const { comment } = this.ctx.request.body;

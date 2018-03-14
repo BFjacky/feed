@@ -4,7 +4,10 @@ const Controller = require('egg').Controller;
 
 class HomeController extends Controller {
   async index() {
-    this.ctx.body = 'hi, egg';
+    console.log(this.ctx.url);
+    // 进行用户鉴权判定
+    console.log('here');
+    this.ctx.body = '123';
   }
 }
 

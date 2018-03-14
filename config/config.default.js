@@ -32,7 +32,7 @@ module.exports = appInfo => {
   };
 
   // middlewares
-  config.middleware = [ 'userHandler' ];
+  config.middleware = [ 'cookie' ];
 
   // ignore csrf
   config.security = {
@@ -42,7 +42,13 @@ module.exports = appInfo => {
     xframe: {
       enable: false,
     },
+    methodnoallow: {
+      enable: false,
+    },
     domainWhiteList: [ 'http://myccc.feit.me' ],
+  };
+  config.cors = {
+    credentials: true,
   };
 
   // urls
