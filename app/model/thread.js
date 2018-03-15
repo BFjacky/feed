@@ -5,12 +5,13 @@ module.exports = app => {
   const { Schema } = mongoose;
   const ThreadSchema = new mongoose.Schema({
     openid: String,
+    avatarUrl: String,
+    nickName: String,
     audio: {
       aid: Schema.Types.ObjectId, // attachment id
       duration: Number, // 语音时长，单位秒
       url: String, // 音频地址，上传到七牛后得到的地址
     },
-    comments: Number, // 此条thread的评论总数
     content: { type: String, maxlength: 300 }, // 内容
     imgs: [{
       aid: Schema.Types.ObjectId, // attachment id
@@ -21,6 +22,8 @@ module.exports = app => {
       url: String, // 图片缩略图地址，上传到七牛后得到的地址
       sourceUrl: String, // 原图地址，上传到七牛后得到的地址
     }],
+    comments: Number, // 此条thread的评论总数
+    commentInfo: [{ avatarUrl: String, openid: String, content: String }], // 评论的详细信息
     praises: Number, // 点赞数
     praiseInfo: [{ avatarUrl: String, uid: Schema.Types.ObjectId }], // 同样直接赋值头像地址
     views: Number, // 此条thread的查看量，暂不实现
