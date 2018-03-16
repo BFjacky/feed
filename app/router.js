@@ -13,10 +13,15 @@ module.exports = app => {
 
   router.post('/thread/newThread', controller.thread.newThread);
 
-
   router.get('/thread/getThread', controller.thread.getThread);
 
+  router.post('/thread/praise', controller.thread.praise);
+
+  router.post('/thread/cancelPraise', controller.thread.cancelPraise);
+
   router.post('/thread/newComment', controller.thread.newComment);
+
+  router.get('/comment/getComment',controller.comment.getComment);
 
   router.post('/user/sync', controller.user.sync);
 };

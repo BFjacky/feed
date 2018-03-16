@@ -15,11 +15,9 @@ const randomString = function() {
 };
 module.exports = () => async function(ctx, next) {
   let feedCookie = ctx.cookies.get('feedCookie');
-  console.log('浏览器中的cookie:', feedCookie);
   if (!feedCookie) {
     feedCookie = randomString();
     ctx.cookies.set('feedCookie', feedCookie, { maxAge: 1000 * 60 * 60 * 24 * 30 });
-    console.log('新设置的cookie:', feedCookie);
   }
   ctx.feedCookie = feedCookie;
   ctx.user = await ctx.model.User.findOne({ feedCookie });
