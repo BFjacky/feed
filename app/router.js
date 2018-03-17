@@ -21,7 +21,11 @@ module.exports = app => {
 
   router.post('/thread/newComment', controller.thread.newComment);
 
-  router.get('/comment/getComment',controller.comment.getComment);
+  router.get('/comment/getComment', controller.comment.getComment);
+
+  router.post('/comment/praise', controller.comment.praise);
+
+  router.post('/comment/cancelPraise', controller.comment.cancelPraise);
 
   router.post('/user/sync', controller.user.sync);
 };

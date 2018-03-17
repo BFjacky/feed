@@ -44,10 +44,10 @@ class ThreadController extends Controller {
     }
     const updateRes = await this.ctx.model.Thread.update({ _id }, { $inc: { praises: 1 }, $push: { praiseInfo: { avatarUrl: user.avatarUrl, openid: user.openid } } });
     if (updateRes.ok) {
-      this.ctx.body = { success: true }
+      this.ctx.body = { success: true };
       return;
     }
-    this.ctx.body = { success: false }
+    this.ctx.body = { success: false };
   }
 
   async cancelPraise() {
@@ -59,10 +59,10 @@ class ThreadController extends Controller {
     }
     const updateRes = await this.ctx.model.Thread.update({ _id }, { $inc: { praises: -1 }, $pull: { praiseInfo: { avatarUrl: user.avatarUrl, openid: user.openid } } });
     if (updateRes.ok) {
-      this.ctx.body = { success: true }
+      this.ctx.body = { success: true };
       return;
     }
-    this.ctx.body = { success: false }
+    this.ctx.body = { success: false };
   }
 
   async newComment() {
@@ -73,27 +73,27 @@ class ThreadController extends Controller {
       return;
     }
 
-    //判断此条comment 的对象是 thread 还是 comment
+    // 判断此条comment 的对象是 thread 还是 comment
     if (sourse === 'thread') {
-      const threadData = new this.ctx.model.Comment({ threadSourceId: _id, content: comment.content, avatarUrl: user.avatarUrl, nickName: user.nickName, openid: user.openid });
+      const threadData = new this.ctx.model.Comment({ threadSourceId: _id, content: comment.content, avatarUrl: user.avatarUrl, nickName: user.nickName, openid: user.openid, praises: 0, comments: 0 });
       await threadData.save();
       const updateRes = await this.ctx.model.Thread.update({ _id }, { $inc: { comments: 1 }, $push: { commentInfo: { avatarUrl: user.avatarUrl, openid: user.openid, content: comment.content } } });
       if (updateRes.ok) {
-        this.ctx.body = { success: true }
+        this.ctx.body = { success: true };
         return;
       }
-      this.ctx.body = { success: false }
+      this.ctx.body = { success: false };
       return;
     }
     if (sourse === 'comment') {
-      const threadData = new this.ctx.model.Comment({ commentSourceId: _id, content: comment.content, avatarUrl: user.avatarUrl, nickName: user.nickName, openid: user.openid });
+      const threadData = new this.ctx.model.Comment({ commentSourceId: _id, content: comment.content, avatarUrl: user.avatarUrl, nickName: user.nickName, openid: user.openid, praises: 0, comments: 0 });
       await threadData.save();
       const updateRes = await this.ctx.model.Comment.update({ _id }, { $inc: { comments: 1 } });
       if (updateRes.ok) {
-        this.ctx.body = { success: true }
+        this.ctx.body = { success: true };
         return;
       }
-      this.ctx.body = { success: false }
+      this.ctx.body = { success: false };
       return;
     }
   }
