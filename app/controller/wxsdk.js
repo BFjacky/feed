@@ -34,29 +34,34 @@ class wxsdkController extends Controller {
   }
 
   async oauth() {
-    const { code } = this.ctx.request.query;
-    // 获取用户的access_token
-    const access_token_url = `https://api.weixin.qq.com/sns/oauth2/access_token?appid=${config.appId}&secret=${config.appSecret}&code=${code}&grant_type=authorization_code`;
-    const accessTokenRes = await axios({
-      url: access_token_url,
-    });
-    const { openid, access_token, refresh_token } = accessTokenRes.data;
-    // 使用access_token 获得用户信息
-    const user_info_url = `https://api.weixin.qq.com/sns/userinfo?access_token=${access_token}&openid=${openid}&lang=zh_CN`;
-    const userInfoRes = await axios({
-      url: user_info_url,
-    });
-    console.log(userInfoRes.data);
-    const { nickname, sex, province, city, country, headimgurl, privilege, unionid } = userInfoRes.data;
-    // 获得此用户的cookie串,存入数据库中
-    const { feedCookie } = this.ctx;
-    await this.ctx.model.User.update({ openid }, { avatarUrl: headimgurl, gender: sex, nickName: nickname, city, province, country, feedCookie }, { mutil: true, upsert: true });
-    // 鉴定该access_token 是否有效
-    // code...
+    try {
+      const { code } = this.ctx.request.body;
+      // 获取用户的access_token
+      const access_token_url = `https://api.weixin.qq.com/sns/oauth2/access_token?appid=${config.appId}&secret=${config.appSecret}&code=${code}&grant_type=authorization_code`;
+      const accessTokenRes = await axios({
+        url: access_token_url,
+      });
+      const { openid, access_token, refresh_token } = accessTokenRes.data;
+      // 使用access_token 获得用户信息
+      const user_info_url = `https://api.weixin.qq.com/sns/userinfo?access_token=${access_token}&openid=${openid}&lang=zh_CN`;
+      const userInfoRes = await axios({
+        url: user_info_url,
+      });
+      const { nickname, sex, province, city, country, headimgurl, privilege, unionid } = userInfoRes.data;
+      // 获得此用户的cookie串,存入数据库中
+      const { feedCookie } = this.ctx;
+      console.log('oauth鉴权:', feedCookie, userInfoRes.data);
+      await this.ctx.model.User.update({ openid }, { avatarUrl: headimgurl, gender: sex, nickName: nickname, city, province, country, feedCookie }, { mutil: true, upsert: true });
+      // 鉴定该access_token 是否有效
+      // code...
 
-    // 使用refresh_token 获得 有效的 access_token
-    // code...
-    this.ctx.body = 'oauth 鉴权成功';
+
+      // 使用refresh_token 获得 有效的 access_token
+      // code...
+      this.ctx.body = 'oauth 鉴权成功';
+    } catch (err) {
+      this.ctx.body = 'oauth 鉴权失败';
+    }
   }
 
 }

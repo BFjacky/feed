@@ -11,7 +11,7 @@ module.exports = app => {
       duration: Number, // 语音时长，单位秒
       url: String, // 音频地址，上传到七牛后得到的地址
     },
-    openid: String, // user openid
+    uid: Schema.Types.ObjectId, // uid
     nickName: String, // user nickName
     avatarUrl: String, // 直接把发送者的头像地址赋值过来，先不用考虑用户换头像后不同步的问题
     comments: Number, // 此条comment的评论总数
@@ -26,7 +26,7 @@ module.exports = app => {
       sourceUrl: String, // 原图地址，上传到七牛后得到的地址
     }],
     praises: Number, // 点赞数
-    praiseInfo: [{ avatarUrl: String, openid: String }], // 同样直接赋值头像地址
+    praiseInfo: [{ avatarUrl: String, uid: Schema.Types.ObjectId }], // 同样直接赋值头像地址
     views: Number, // 此条comment的查看量，暂不实现
   }, { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } });
 

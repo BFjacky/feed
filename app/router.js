@@ -5,7 +5,7 @@
  */
 module.exports = app => {
   const { router, controller } = app;
-  router.get('/', controller.wxsdk.oauth);
+  router.post('/oauth', controller.wxsdk.oauth);
 
   router.get('/sign', controller.wxsdk.sign);
 
@@ -27,5 +27,5 @@ module.exports = app => {
 
   router.post('/comment/cancelPraise', controller.comment.cancelPraise);
 
-  router.post('/user/sync', controller.user.sync);
+  router.get('/user/get', controller.user.get);
 };
