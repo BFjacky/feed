@@ -28,13 +28,49 @@ class ThreadController extends Controller {
     const { objectId } = this.ctx.request.query;
     if (!objectId) {
       const threads = await this.ctx.model.Thread.find().limit(5).sort({ _id: -1 });
-      this.ctx.body = { success: true, threads, user };
+      this.ctx.body = { success: true, threads };
       return;
     }
     const threads = await this.ctx.model.Thread.find({ _id: { $lt: objectId } }).limit(5).sort({ _id: -1 });
-    this.ctx.body = { success: true, threads, user };
+    this.ctx.body = { success: true, threads };
     return;
 
+  }
+  async getHotThread() {
+    // 判断objectId 是否存在与 objectids中
+    function checkObjectId(objectIds, objectId) {
+      for (const id of objectIds) {
+        if (id == objectId) {
+          return true;
+        }
+      }
+      return false;
+    }
+    // 按照热度排序
+    const { objectIds } = this.ctx.request.body;
+    console.log('here');
+    if (!objectIds) {
+      const threads2 = await this.ctx.model.Thread.find().sort({ praises: -1, _id: -1 });
+      for (const thread of threads2) {
+        console.log(thread.praises);
+      }
+      const threads = await this.ctx.model.Thread.find().limit(5).sort({ praises: -1, _id: -1 });
+      this.ctx.body = { success: true, threads };
+      return;
+    }
+    // 根据前端传递的objectIds判断是否重复
+    const tempThreads = await this.ctx.model.Thread.find().sort({ praises: -1, _id: -1 });
+    const threads = [];
+    for (const thread of tempThreads) {
+      if (!checkObjectId(objectIds, thread._id)) {
+        threads.push(thread);
+      }
+      if (threads.length >= 5) {
+        break;
+      }
+    }
+    this.ctx.body = { success: true, threads };
+    return;
   }
   async praise() {
     const { _id } = this.ctx.request.body;

@@ -15,6 +15,8 @@ module.exports = app => {
 
   router.get('/thread/getThread', controller.thread.getThread);
 
+  router.post('/thread/getHotThread', controller.thread.getHotThread);
+
   router.post('/thread/praise', controller.thread.praise);
 
   router.post('/thread/cancelPraise', controller.thread.cancelPraise);
