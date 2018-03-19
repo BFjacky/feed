@@ -9,11 +9,13 @@ class CommentController extends Controller {
     // 如果 sourse 是 thread
     if (sourse === 'thread') {
       if (!commentId) {
-        const comments = await this.ctx.model.Comment.find({ threadSourceId: _id }).limit(10).sort({ _id: -1 });
+        let comments = await this.ctx.model.Comment.find({ threadSourceId: _id }).limit(10).sort({ _id: -1 });
+        comments = this.ctx.service.utils.checkPraised(comments, user._id);
         this.ctx.body = { success: true, comments };
         return;
       }
-      const comments = await this.ctx.model.Comment.find({ _id: { $lt: commentId } }).limit(10).sort({ _id: -1 });
+      let comments = await this.ctx.model.Comment.find({ _id: { $lt: commentId } }).limit(10).sort({ _id: -1 });
+      comments = this.ctx.service.utils.checkPraised(comments, user._id);
       this.ctx.body = { success: true, comments };
       return;
     }
@@ -27,7 +29,8 @@ class CommentController extends Controller {
     const { user } = this.ctx;
     // 如果 sourse 是 thread
     if (sourse === 'thread') {
-      const comments = await this.ctx.model.Comment.find({ threadSourceId: _id }).limit(3).sort({ praises: -1 });
+      let comments = await this.ctx.model.Comment.find({ threadSourceId: _id }).limit(3).sort({ praises: -1 });
+      comments = this.ctx.service.utils.checkPraised(comments, user._id);
       this.ctx.body = { success: true, comments };
       return;
     }
@@ -40,14 +43,9 @@ class CommentController extends Controller {
       return;
     }
     // 判断该thread中是否已经有了该用户的点赞
-    let flag = false;
     const comment = await this.ctx.model.Comment.findOne({ _id });
-    for (const praiseInfo of comment.praiseInfo) {
-      if (_.isEqual(praiseInfo.uid === user._id)) {
-        flag = true;
-        break;
-      }
-    }
+    const flag = this.ctx.service.utils.checkOnePraised(comment, user._id);
+
     if (flag) {
       this.ctx.body = { success: false, message: '该用户已经为此条comment点过赞了' };
       return;
@@ -67,14 +65,9 @@ class CommentController extends Controller {
       return;
     }
     // 判断该thread中是否已经有了该用户的点赞
-    let flag = false;
     const comment = await this.ctx.model.Comment.findOne({ _id });
-    for (const praiseInfo of comment.praiseInfo) {
-      if (_.isEqual(praiseInfo.uid === user._id)) {
-        flag = true;
-        break;
-      }
-    }
+    const flag = this.ctx.service.utils.checkOnePraised(comment, user._id);
+
     if (!flag) {
       this.ctx.body = { success: false, message: '该用户没有未此条comment点过赞' };
       return;

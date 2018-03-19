@@ -28,6 +28,8 @@ module.exports = app => {
     praises: Number, // 点赞数
     praiseInfo: [{ avatarUrl: String, uid: Schema.Types.ObjectId }], // 同样直接赋值头像地址
     views: Number, // 此条comment的查看量，暂不实现
+
+    hasPraised: Boolean, // 是否已经点过赞
   }, { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } });
 
   return mongoose.model('Comment', CommentSchema);

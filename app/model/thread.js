@@ -28,6 +28,8 @@ module.exports = app => {
     praiseInfo: [{ avatarUrl: String, uid: Schema.Types.ObjectId }], // 同样直接赋值头像地址
     views: Number, // 此条thread的查看量，暂不实现
     themeText: String, // 此条thread所属的类别，中文描述
+
+    hasPraised: Boolean, // 是否已经点过赞
   }, { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } });
 
   ThreadSchema.virtual('commentList')

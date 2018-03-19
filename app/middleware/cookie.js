@@ -21,5 +21,8 @@ module.exports = () => async function(ctx, next) {
   }
   ctx.feedCookie = feedCookie;
   ctx.user = await ctx.model.User.findOne({ feedCookie });
+  if (!ctx.user) {
+    ctx.user = {};
+  }
   await next();
 };

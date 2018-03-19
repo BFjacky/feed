@@ -27,11 +27,13 @@ class ThreadController extends Controller {
     const { user } = this.ctx;
     const { objectId } = this.ctx.request.query;
     if (!objectId) {
-      const threads = await this.ctx.model.Thread.find().limit(5).sort({ _id: -1 });
+      let threads = await this.ctx.model.Thread.find().limit(5).sort({ _id: -1 });
+      threads = this.ctx.service.utils.checkPraised(threads, user._id);
       this.ctx.body = { success: true, threads };
       return;
     }
-    const threads = await this.ctx.model.Thread.find({ _id: { $lt: objectId } }).limit(5).sort({ _id: -1 });
+    let threads = await this.ctx.model.Thread.find({ _id: { $lt: objectId } }).limit(5).sort({ _id: -1 });
+    threads = this.ctx.service.utils.checkPraised(threads, user._id);
     this.ctx.body = { success: true, threads };
     return;
 
@@ -48,19 +50,20 @@ class ThreadController extends Controller {
     }
     // 按照热度排序
     const { objectIds } = this.ctx.request.body;
-    console.log('here');
+    const { user } = this.ctx;
     if (!objectIds) {
       const threads2 = await this.ctx.model.Thread.find().sort({ praises: -1, _id: -1 });
       for (const thread of threads2) {
         console.log(thread.praises);
       }
-      const threads = await this.ctx.model.Thread.find().limit(5).sort({ praises: -1, _id: -1 });
+      let threads = await this.ctx.model.Thread.find().limit(5).sort({ praises: -1, _id: -1 });
+      threads = this.ctx.service.utils.checkPraised(threads, user._id);
       this.ctx.body = { success: true, threads };
       return;
     }
     // 根据前端传递的objectIds判断是否重复
     const tempThreads = await this.ctx.model.Thread.find().sort({ praises: -1, _id: -1 });
-    const threads = [];
+    let threads = [];
     for (const thread of tempThreads) {
       if (!checkObjectId(objectIds, thread._id)) {
         threads.push(thread);
@@ -69,6 +72,7 @@ class ThreadController extends Controller {
         break;
       }
     }
+    threads = this.ctx.service.utils.checkPraised(threads, user._id);
     this.ctx.body = { success: true, threads };
     return;
   }
@@ -79,11 +83,13 @@ class ThreadController extends Controller {
     const { user } = this.ctx;
     const { objectId, themeText } = this.ctx.request.body;
     if (!objectId) {
-      const threads = await this.ctx.model.Thread.find({ themeText }).limit(5).sort({ _id: -1 });
+      let threads = await this.ctx.model.Thread.find({ themeText }).limit(5).sort({ _id: -1 });
+      threads = this.ctx.service.utils.checkPraised(threads, user._id);
       this.ctx.body = { success: true, threads };
       return;
     }
-    const threads = await this.ctx.model.Thread.find({ _id: { $lt: objectId }, themeText }).limit(5).sort({ _id: -1 });
+    let threads = await this.ctx.model.Thread.find({ _id: { $lt: objectId }, themeText }).limit(5).sort({ _id: -1 });
+    threads = this.ctx.service.utils.checkPraised(threads, user._id);
     this.ctx.body = { success: true, threads };
     return;
   }
@@ -94,17 +100,10 @@ class ThreadController extends Controller {
       this.ctx.body = { success: false, message: '请先登录' };
       return;
     }
-    console.log('点赞', user);
+
     // 判断该thread中是否已经有了该用户的点赞
-    let flag = false;
     const thread = await this.ctx.model.Thread.findOne({ _id });
-    for (const praiseInfo of thread.praiseInfo) {
-      if (_.isEqual(praiseInfo.uid, user._id)) {
-        flag = true;
-        console.log('点过赞了');
-        break;
-      }
-    }
+    const flag = this.ctx.service.utils.checkOnePraised(thread, user._id);
     if (flag) {
       this.ctx.body = { success: false, message: '该用户已经为此条thread点过赞了' };
       return;
@@ -126,14 +125,8 @@ class ThreadController extends Controller {
       return;
     }
     // 判断该thread中是否已经有了该用户的点赞
-    let flag = false;
     const thread = await this.ctx.model.Thread.findOne({ _id });
-    for (const praiseInfo of thread.praiseInfo) {
-      if (_.isEqual(praiseInfo.uid, user._id)) {
-        flag = true;
-        break;
-      }
-    }
+    const flag = this.ctx.service.utils.checkOnePraised(thread, user._id);
     if (!flag) {
       this.ctx.body = { success: false, message: '该用户没有为此条thread点过赞' };
       return;
@@ -149,7 +142,7 @@ class ThreadController extends Controller {
   async newComment() {
     const { _id, comment, sourse } = this.ctx.request.body;
     const { user } = this.ctx;
-    if (!user) {
+    if (!user || !user._id) {
       this.ctx.body = { success: false, message: '请先登录' };
       return;
     }
