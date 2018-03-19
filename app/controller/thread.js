@@ -72,6 +72,21 @@ class ThreadController extends Controller {
     this.ctx.body = { success: true, threads };
     return;
   }
+
+  async getThreadByType() {
+    console.log('here');
+    // 按照时间排序
+    const { user } = this.ctx;
+    const { objectId, themeText } = this.ctx.request.body;
+    if (!objectId) {
+      const threads = await this.ctx.model.Thread.find({ themeText }).limit(5).sort({ _id: -1 });
+      this.ctx.body = { success: true, threads };
+      return;
+    }
+    const threads = await this.ctx.model.Thread.find({ _id: { $lt: objectId }, themeText }).limit(5).sort({ _id: -1 });
+    this.ctx.body = { success: true, threads };
+    return;
+  }
   async praise() {
     const { _id } = this.ctx.request.body;
     const { user } = this.ctx;
