@@ -27,6 +27,8 @@ module.exports = app => {
 
   router.get('/comment/getComment', controller.comment.getComment);
 
+  router.get('/comment/getHotComment', controller.comment.getHotComment);
+
   router.post('/comment/praise', controller.comment.praise);
 
   router.post('/comment/cancelPraise', controller.comment.cancelPraise);
