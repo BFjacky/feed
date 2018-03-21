@@ -8,8 +8,8 @@ const config = {
   jsUrl: 'http://myccc.feit.me/#/',
 };
 // 缓存access_token
-const access_token = '7_mbIkgKyHrUdILNs8ndzlxVXBtA4k_-S6uApperNolVdyIgyFtVQ5E-3FboNdGKRDMCvJYk5Imhy_pnA5oJLzv8zDf46vZyghBU2v7JstUXNdwl9TdpHFWgZR1QvaJchGfKUp9n35JcXloD40TETbADAPAP';
-const ticket = 'kgt8ON7yVITDhtdwci0qeTBUy1h11jipFl0kX7yhsImeTkMDy7oSJtjV9t0lvn7Tjk41ftEIa2YNa2BEnTtCHQ';
+const access_token = '7_51XmytDGehNLbnzGAVuo2eYY4jxsOav6_e318coUwkLo4ctDzNiJbSbPTpMwSJKwnIoZlvJuGBtN6avPnBmHoz_iNlOh10aUu6KlI4Q4jgarMiPyeHhT9fKQaqvoQecm58avXogNy_oTUwgiAJHdAGAHQO';
+const ticket = 'kgt8ON7yVITDhtdwci0qeTBUy1h11jipFl0kX7yhsInbBqnPz7bEvgMLuexwxIi15p2TL9FUXFMTDGa2ipDkgg';
 const tokenUrl = `https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appId=${config.appId}&secret=${config.appSecret}`;
 const ticketUrl = `https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=${access_token}&type=jsapi`;
 class wxsdkController extends Controller {

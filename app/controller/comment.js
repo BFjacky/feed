@@ -14,14 +14,17 @@ class CommentController extends Controller {
         this.ctx.body = { success: true, comments };
         return;
       }
-      let comments = await this.ctx.model.Comment.find({ _id: { $lt: commentId } }).limit(10).sort({ _id: -1 });
+      let comments = await this.ctx.model.Comment.find({ threadSourceId: _id, _id: { $lt: commentId } }).limit(10).sort({ _id: -1 });
       comments = this.ctx.service.utils.checkPraised(comments, user._id);
       this.ctx.body = { success: true, comments };
       return;
     }
     // 如果 sourse 是 comment
     if (sourse === 'comment') {
-
+      let comments = await this.ctx.model.Comment.find({ commentSourceId: _id }).sort({ _id: -1 });
+      comments = this.ctx.service.utils.checkPraised(comments, user._id);
+      this.ctx.body = { success: true, comments };
+      return;
     }
   }
   async getHotComment() {

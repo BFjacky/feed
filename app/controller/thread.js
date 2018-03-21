@@ -149,8 +149,8 @@ class ThreadController extends Controller {
 
     // 判断此条comment 的对象是 thread 还是 comment
     if (sourse === 'thread') {
-      const threadData = new this.ctx.model.Comment({ threadSourceId: _id, content: comment.content, avatarUrl: user.avatarUrl, nickName: user.nickName, uid: user._id, praises: 0, comments: 0 });
-      await threadData.save();
+      const commentData = new this.ctx.model.Comment({ threadSourceId: _id, content: comment.content, avatarUrl: user.avatarUrl, nickName: user.nickName, uid: user._id, praises: 0, comments: 0 });
+      await commentData.save();
       const updateRes = await this.ctx.model.Thread.update({ _id }, { $inc: { comments: 1 }, $push: { commentInfo: { avatarUrl: user.avatarUrl, uid: user._id, content: comment.content } } });
       if (updateRes.ok) {
         this.ctx.body = { success: true };
@@ -160,9 +160,9 @@ class ThreadController extends Controller {
       return;
     }
     if (sourse === 'comment') {
-      const threadData = new this.ctx.model.Comment({ commentSourceId: _id, content: comment.content, avatarUrl: user.avatarUrl, nickName: user.nickName, uid: user._id, praises: 0, comments: 0 });
-      await threadData.save();
-      const updateRes = await this.ctx.model.Comment.update({ _id }, { $inc: { comments: 1 } });
+      const commentData = new this.ctx.model.Comment({ commentSourceId: _id, content: comment.content, avatarUrl: user.avatarUrl, nickName: user.nickName, uid: user._id, praises: 0, comments: 0 });
+      await commentData.save();
+      const updateRes = await this.ctx.model.Comment.update({ _id }, { $inc: { comments: 1 }, $push: { commentInfo: { avatarUrl: user.avatarUrl, uid: user._id, content: comment.content, nickName: user.nickName } } });
       if (updateRes.ok) {
         this.ctx.body = { success: true };
         return;

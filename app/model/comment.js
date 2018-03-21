@@ -15,6 +15,7 @@ module.exports = app => {
     nickName: String, // user nickName
     avatarUrl: String, // 直接把发送者的头像地址赋值过来，先不用考虑用户换头像后不同步的问题
     comments: Number, // 此条comment的评论总数
+    commentInfo: [{ avatarUrl: String, uid: Schema.Types.ObjectId, content: String, nickName: String }], //
     content: { type: String, maxlength: 300 }, // 内容
     images: [{
       aid: Schema.Types.ObjectId, // attachment id
