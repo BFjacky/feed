@@ -34,6 +34,21 @@ class utilsService extends Service {
     console.log('没没没点过赞了');
     return false;
   }
+
+  // 为notifies 添加 正文主体 字段
+  async getContents(notifies) {
+    for (const notify of notifies) {
+      if (notify.threadSourceId) {
+        const thread = await this.ctx.model.Thread.findOne({ _id: notify.threadSourceId });
+        notify.sourceContent = thread.content;
+      }
+      if (notify.commentSourceId) {
+        const comment = await this.ctx.model.Comment.findOne({ _id: notify.commentSourceId });
+        notify.sourceContent = comment.content;
+      }
+    }
+    return notifies;
+  }
 }
 
 module.exports = utilsService;

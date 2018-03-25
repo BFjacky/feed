@@ -8,6 +8,7 @@ module.exports = app => {
     hasRead: Boolean,
     threadSourceId: { type: Schema.Types.ObjectId, ref: 'Thread' }, // 通知所属的thread
     commentSourceId: { type: Schema.Types.ObjectId, ref: 'Comment' }, // 通知所属的comment
+    sourceContent: String, // 这条通知所属的正文主题
 
     commentInfo: { avatarUrl: String, uid: Schema.Types.ObjectId, nickName: String, content: String },
     commentId: Schema.Types.ObjectId,
