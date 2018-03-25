@@ -54,7 +54,7 @@ class ThreadController extends Controller {
     if (!objectIds) {
       const threads2 = await this.ctx.model.Thread.find().sort({ praises: -1, _id: -1 });
       for (const thread of threads2) {
-        console.log(thread.praises);
+        // console.log(thread.praises);
       }
       let threads = await this.ctx.model.Thread.find().limit(5).sort({ praises: -1, _id: -1 });
       threads = this.ctx.service.utils.checkPraised(threads, user._id);
@@ -78,7 +78,6 @@ class ThreadController extends Controller {
   }
 
   async getThreadByType() {
-    console.log('here');
     // 按照时间排序
     const { user } = this.ctx;
     const { objectId, themeText } = this.ctx.request.body;
@@ -93,6 +92,23 @@ class ThreadController extends Controller {
     this.ctx.body = { success: true, threads };
     return;
   }
+
+  async getThreadByUser() {
+    // 获得某一个用户的thread
+    const { user } = this.ctx;
+    const { objectId } = this.ctx.request.body;
+    if (!objectId) {
+      let threads = await this.ctx.model.Thread.find({ uid: user._id }).limit(5).sort({ _id: -1 });
+      threads = this.ctx.service.utils.checkPraised(threads, user._id);
+      this.ctx.body = { success: true, threads };
+      return;
+    }
+    let threads = await this.ctx.model.Thread.find({ _id: { $lt: objectId }, uid: user._id }).limit(5).sort({ _id: -1 });
+    threads = this.ctx.service.utils.checkPraised(threads, user._id);
+    this.ctx.body = { success: true, threads };
+    return;
+  }
+
   async praise() {
     const { _id } = this.ctx.request.body;
     const { user } = this.ctx;
@@ -150,8 +166,17 @@ class ThreadController extends Controller {
     // 判断此条comment 的对象是 thread 还是 comment
     if (sourse === 'thread') {
       const commentData = new this.ctx.model.Comment({ threadSourceId: _id, content: comment.content, avatarUrl: user.avatarUrl, nickName: user.nickName, uid: user._id, praises: 0, comments: 0 });
-      await commentData.save();
-      const updateRes = await this.ctx.model.Thread.update({ _id }, { $inc: { comments: 1 }, $push: { commentInfo: { avatarUrl: user.avatarUrl, uid: user._id, content: comment.content } } });
+      const newComment = await commentData.save();
+      const updateRes = await this.ctx.model.Thread.update({ _id }, { $inc: { comments: 1 }, $push: { commentInfo: { avatarUrl: user.avatarUrl, uid: user._id, content: comment.content, nickName: user.nickName } } });
+
+      // 生成一条通知
+      const sourseThread = await this.ctx.model.Thread.findOne({ _id });
+      const sourseUid = sourseThread.uid;
+      const notifyData = new this.ctx.model.Notify({ uid: sourseUid, hasRead: false, threadSourceId: _id, commentInfo: { avatarUrl: user.avatarUrl, uid: user._id, content: comment.content, nickName: user.nickName }, commentId: newComment._id });
+      await notifyData.save();
+      // 生成新通知事件
+      await this.ctx.app.redis.set(sourseUid, true);
+
       if (updateRes.ok) {
         this.ctx.body = { success: true };
         return;
@@ -161,8 +186,17 @@ class ThreadController extends Controller {
     }
     if (sourse === 'comment') {
       const commentData = new this.ctx.model.Comment({ commentSourceId: _id, content: comment.content, avatarUrl: user.avatarUrl, nickName: user.nickName, uid: user._id, praises: 0, comments: 0 });
-      await commentData.save();
+      const newComment = await commentData.save();
       const updateRes = await this.ctx.model.Comment.update({ _id }, { $inc: { comments: 1 }, $push: { commentInfo: { avatarUrl: user.avatarUrl, uid: user._id, content: comment.content, nickName: user.nickName } } });
+
+      // 生成一条通知
+      const sourseComment = await this.ctx.model.Comment.findOne({ _id });
+      const sourseUid = sourseComment.uid;
+      const notifyData = new this.ctx.model.Notify({ uid: sourseUid, hasRead: false, commentSourceId: _id, commentInfo: { avatarUrl: user.avatarUrl, uid: user._id, content: comment.content }, commentId: newComment._id });
+      await notifyData.save();
+      // 生成新通知事件
+      await this.ctx.app.redis.set(sourseUid, true);
+
       if (updateRes.ok) {
         this.ctx.body = { success: true };
         return;

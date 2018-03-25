@@ -23,9 +23,9 @@ module.exports = app => {
       sourceUrl: String, // 原图地址，上传到七牛后得到的地址
     }],
     comments: Number, // 此条thread的评论总数
-    commentInfo: [{ avatarUrl: String, uid: Schema.Types.ObjectId, content: String }], // 评论的详细信息
+    commentInfo: [{ avatarUrl: String, uid: Schema.Types.ObjectId, nickName: String, content: String, hasread: Boolean }], // 评论的详细信息
     praises: Number, // 点赞数
-    praiseInfo: [{ avatarUrl: String, uid: Schema.Types.ObjectId }], // 同样直接赋值头像地址
+    praiseInfo: [{ avatarUrl: String, uid: Schema.Types.ObjectId, hasread: Boolean }], // 同样直接赋值头像地址
     views: Number, // 此条thread的查看量，暂不实现
     themeText: String, // 此条thread所属的类别，中文描述
 

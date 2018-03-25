@@ -19,6 +19,8 @@ module.exports = app => {
 
   router.post('/thread/getThreadByType', controller.thread.getThreadByType);
 
+  router.post('/thread/getThreadByUser', controller.thread.getThreadByUser);
+
   router.post('/thread/praise', controller.thread.praise);
 
   router.post('/thread/cancelPraise', controller.thread.cancelPraise);
@@ -34,4 +36,6 @@ module.exports = app => {
   router.post('/comment/cancelPraise', controller.comment.cancelPraise);
 
   router.get('/user/get', controller.user.get);
+
+  router.post('/user/getNotifyNoRead', controller.user.getNotifyNoRead);
 };

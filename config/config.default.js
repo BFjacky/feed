@@ -45,7 +45,7 @@ module.exports = appInfo => {
     methodnoallow: {
       enable: false,
     },
-    domainWhiteList: [ 'http://myccc.feit.me' ],
+    domainWhiteList: [ 'http://myccc.feit.me', 'http://localhost:8080' ],
   };
   config.cors = {
     credentials: true,
