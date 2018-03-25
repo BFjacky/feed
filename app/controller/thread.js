@@ -22,6 +22,12 @@ class ThreadController extends Controller {
     await threadData.save();
     this.ctx.body = { success: true };
   }
+  async getOneThread() {
+    const { threadId } = this.ctx.request.body;
+    const thread = await this.ctx.model.Thread.findOne({ _id: threadId });
+    this.ctx.body = { success: true, thread };
+    return;
+  }
   async getThread() {
     // 按照时间排序
     const { user } = this.ctx;

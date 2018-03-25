@@ -13,6 +13,9 @@ module.exports = app => {
 
   router.post('/thread/newThread', controller.thread.newThread);
 
+
+  router.post('/thread/getOneThread', controller.thread.getOneThread);
+
   router.get('/thread/getThread', controller.thread.getThread);
 
   router.post('/thread/getHotThread', controller.thread.getHotThread);
@@ -27,6 +30,8 @@ module.exports = app => {
 
   router.post('/thread/newComment', controller.thread.newComment);
 
+  router.post('/comment/getOneComment', controller.comment.getOneComment);
+
   router.get('/comment/getComment', controller.comment.getComment);
 
   router.get('/comment/getHotComment', controller.comment.getHotComment);
@@ -38,4 +43,6 @@ module.exports = app => {
   router.get('/user/get', controller.user.get);
 
   router.post('/user/getNotifyNoRead', controller.user.getNotifyNoRead);
+
+  router.post('/user/readNotify', controller.user.readNotify);
 };

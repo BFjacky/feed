@@ -3,6 +3,12 @@
 const Controller = require('egg').Controller;
 const _ = require('lodash');
 class CommentController extends Controller {
+  async getOneComment() {
+    const { commentId } = this.ctx.request.body;
+    const comment = await this.ctx.model.Comment.findOne({ _id: commentId });
+    this.ctx.body = { success: true, comment };
+    return;
+  }
   async getComment() {
     const { sourse, _id, commentId } = this.ctx.request.query;
     const { user } = this.ctx;

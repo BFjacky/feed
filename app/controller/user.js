@@ -26,7 +26,7 @@ class UserController extends Controller {
           console.log('redis中:', flag);
           if (flag == 'true') {
             // 已经有新通知了
-            const notifies = await _this.ctx.model.Notify.find({ uid: user._id }).sort({ _id: -1 });
+            const notifies = await _this.ctx.model.Notify.find({ uid: user._id, hasRead: false }).sort({ _id: -1 });
             await _this.ctx.app.redis.set(user._id, false);
             resolve(notifies);
             clearInterval(intervalId);
@@ -41,7 +41,7 @@ class UserController extends Controller {
 
     // 如果是第一次来查询 通知 ,则直接返回
     if (firstTime) {
-      let notifies = await this.ctx.model.Notify.find({ uid: user._id }).sort({ _id: -1 });
+      let notifies = await this.ctx.model.Notify.find({ uid: user._id, hasRead: false }).sort({ _id: -1 });
       notifies = await this.ctx.service.utils.getContents(notifies);
       this.ctx.body = { success: true, notifies };
       await this.ctx.app.redis.set(user._id, false);
@@ -57,6 +57,14 @@ class UserController extends Controller {
     notifies = await this.ctx.service.utils.getContents(notifies);
     this.ctx.body = { success: true, notifies };
     return;
+  }
+
+  async readNotify() {
+    const { notifies } = this.ctx.request.body;
+    for (const notify of notifies) {
+      await this.ctx.model.Notify.update({ _id: notify._id }, { hasRead: true });
+    }
+    this.ctx.body = { success: true };
   }
 
 }
