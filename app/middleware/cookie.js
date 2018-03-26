@@ -14,6 +14,7 @@ const randomString = function() {
   return pwd;
 };
 module.exports = () => async function(ctx, next) {
+  console.log('进入');
   let feedCookie = ctx.cookies.get('feedCookie');
   if (!feedCookie) {
     feedCookie = randomString();

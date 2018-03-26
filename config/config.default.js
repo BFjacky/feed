@@ -1,5 +1,5 @@
 'use strict';
-
+const path = require('path');
 module.exports = appInfo => {
   const config = exports = {};
 
@@ -50,6 +50,14 @@ module.exports = appInfo => {
   config.cors = {
     credentials: true,
   };
+
+  // add static file server
+  config.static = {
+    prefix: '/',
+    dir: path.join(appInfo.baseDir, 'app/public'),
+    dynamic: true,
+  };
+
 
   // urls
   config.url = {
