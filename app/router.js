@@ -6,9 +6,9 @@
 module.exports = app => {
   const { router, controller } = app;
 
-  // router.get('/', controller.home.index);
+  router.get('/', controller.home.index);
 
-  router.post('/oauth', controller.wxsdk.oauth);
+  router.get('/oauth', controller.wxsdk.oauth);
 
   router.get('/sign', controller.wxsdk.sign);
 

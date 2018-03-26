@@ -2,6 +2,8 @@
 const crypto = require('crypto');
 const Controller = require('egg').Controller;
 const axios = require('axios');
+const path = require('path');
+const fs = require('fs');
 const config = {
   appId: 'wx9fd6bbc89436a5ee',
   appSecret: '338e4bea61cc75fe5f69ad9a1416e893',
@@ -34,8 +36,9 @@ class wxsdkController extends Controller {
   }
 
   async oauth() {
+    console.log('redirect here！！！！！！！！！！！！1');
     try {
-      const { code } = this.ctx.request.body;
+      const { code } = this.ctx.request.query;
       // 获取用户的access_token
       const access_token_url = `https://api.weixin.qq.com/sns/oauth2/access_token?appid=${config.appId}&secret=${config.appSecret}&code=${code}&grant_type=authorization_code`;
       const accessTokenRes = await axios({
@@ -58,9 +61,14 @@ class wxsdkController extends Controller {
 
       // 使用refresh_token 获得 有效的 access_token
       // code...
-      this.ctx.body = 'oauth 鉴权成功';
+      const res = fs.readFileSync(path.join(__dirname, '../public', '/index.html'));
+      this.ctx.response.append('content-type', 'text/html');
+      this.ctx.response.body = res;
     } catch (err) {
-      this.ctx.body = 'oauth 鉴权失败';
+      // FIX ME  授权失败如何操作
+      const res = fs.readFileSync(path.join(__dirname, '../public', '/index.html'));
+      this.ctx.response.append('content-type', 'text/html');
+      this.ctx.response.body = res;
     }
   }
 
