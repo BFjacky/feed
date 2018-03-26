@@ -5,7 +5,7 @@ const axios = require('axios');
 const config = {
   appId: 'wx9fd6bbc89436a5ee',
   appSecret: '338e4bea61cc75fe5f69ad9a1416e893',
-  jsUrl: 'http://myccc.feit.me/#/',
+  jsUrl: 'https://neau-lib.xiaonei.io/feed',
 };
 // 缓存access_token
 const access_token = '7_51XmytDGehNLbnzGAVuo2eYY4jxsOav6_e318coUwkLo4ctDzNiJbSbPTpMwSJKwnIoZlvJuGBtN6avPnBmHoz_iNlOh10aUu6KlI4Q4jgarMiPyeHhT9fKQaqvoQecm58avXogNy_oTUwgiAJHdAGAHQO';
