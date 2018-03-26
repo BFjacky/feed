@@ -31,7 +31,7 @@ module.exports = appInfo => {
     },
   };
 
-  // middlewares
+  // middleware
   config.middleware = [ 'cookie' ];
 
   // ignore csrf
