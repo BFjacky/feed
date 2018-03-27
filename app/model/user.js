@@ -5,7 +5,7 @@ module.exports = app => {
   const UserSchema = new mongoose.Schema({
     openid: { type: String },
     avatarUrl: { type: String },
-    gender: { type: Number }, // 女性为 0， 男性为 1
+    gender: { type: Number }, // 女性为 2， 男性为 1
     nickName: { type: String },
     city: { type: String },
     province: { type: String },
