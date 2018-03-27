@@ -20,6 +20,7 @@ module.exports = app => {
       height: Number, // 图片高度
       width: Number, // 图片宽度
       url: String, // 图片缩略图地址，上传到七牛后得到的地址
+      urlMiddle: String,
       sourceUrl: String, // 原图地址，上传到七牛后得到的地址
     }],
     comments: Number, // 此条thread的评论总数
