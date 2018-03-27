@@ -19,7 +19,7 @@ class FileController extends Controller {
 
     const cdnManager = new qiniu2.cdn.CdnManager(null);
     const sourceUrl = cdnManager.createTimestampAntiLeechUrl(domain, key, null, urlKey1, deadline);
-    const url = cdnManager.createTimestampAntiLeechUrl(domain, key + '/w200', null, urlKey1, deadline);
+    const url = cdnManager.createTimestampAntiLeechUrl(domain, key + '/w400', null, urlKey1, deadline);
 
     const { bucket } = this.app.config.qiniu2.client;
     const options = {

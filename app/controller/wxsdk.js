@@ -36,7 +36,6 @@ class wxsdkController extends Controller {
   }
 
   async oauth() {
-    console.log('redirect here！！！！！！！！！！！！1');
     try {
       const { code } = this.ctx.request.query;
       // 获取用户的access_token
