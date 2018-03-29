@@ -15,12 +15,12 @@ class CommentController extends Controller {
     // 如果 sourse 是 thread
     if (sourse === 'thread') {
       if (!commentId) {
-        let comments = await this.ctx.model.Comment.find({ threadSourceId: _id }).limit(10).sort({ _id: -1 });
+        let comments = await this.ctx.model.Comment.find({ threadSourceId: _id }).limit(20).sort({ _id: -1 });
         comments = this.ctx.service.utils.checkPraised(comments, user._id);
         this.ctx.body = { success: true, comments };
         return;
       }
-      let comments = await this.ctx.model.Comment.find({ threadSourceId: _id, _id: { $lt: commentId } }).limit(10).sort({ _id: -1 });
+      let comments = await this.ctx.model.Comment.find({ threadSourceId: _id, _id: { $lt: commentId } }).limit(20).sort({ _id: -1 });
       comments = this.ctx.service.utils.checkPraised(comments, user._id);
       this.ctx.body = { success: true, comments };
       return;

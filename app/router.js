@@ -16,6 +16,7 @@ module.exports = app => {
 
   router.post('/thread/newThread', controller.thread.newThread);
 
+  router.post('/thread/deleteThread', controller.thread.deleteThread);
 
   router.post('/thread/getOneThread', controller.thread.getOneThread);
 
@@ -45,11 +46,15 @@ module.exports = app => {
 
   router.get('/user/get', controller.user.get);
 
+  router.get('/user/getUesrById', controller.user.getUesrById);
+
   router.post('/user/focus', controller.user.focus);
 
   router.post('/user/cancelFocus', controller.user.cancelFocus);
 
   router.post('/user/shields', controller.user.shields);
+
+  router.post('/user/cancelShields', controller.user.cancelShields);
 
   router.post('/user/getNotifyNoRead', controller.user.getNotifyNoRead);
 

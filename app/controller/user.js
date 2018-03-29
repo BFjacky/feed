@@ -10,6 +10,16 @@ class UserController extends Controller {
     const { user } = this.ctx;
     this.ctx.body = user;
   }
+  async getUesrById() {
+    const { user } = this.ctx;
+    const users = [];
+    const fields = [ 'avatarUrl', 'gender', 'nickName', 'city', 'province', 'country' ];
+    for (const shield of user.shields) {
+      const userRes = await this.ctx.model.User.findOne({ _id: shield.uid }, fields);
+      users.push(userRes);
+    }
+    this.ctx.body = { success: true, users };
+  }
   async focus() {
     const { user } = this.ctx;
     const { uid } = this.ctx.request.body;
@@ -79,6 +89,28 @@ class UserController extends Controller {
       }
     }
     const updateRes = await this.ctx.model.User.update({ _id: user._id }, { $push: { shields: { uid } } });
+    if (updateRes.ok === 1) {
+      const newUser = await this.ctx.model.User.findOne({ _id: user._id });
+      this.ctx.body = { success: true, shields: newUser.shields };
+      return;
+    }
+    this.ctx.body = { success: false };
+    return;
+  }
+
+  async cancelShields() {
+    const { user } = this.ctx;
+    const { uid } = this.ctx.request.body;
+    if (!user) {
+      this.ctx.body = { success: false, message: '未获得到user' };
+      return;
+    }
+    if (!user._id) {
+      this.ctx.body = { success: false, message: '未获得到_id' };
+      return;
+    }
+
+    const updateRes = await this.ctx.model.User.update({ _id: user._id }, { $pull: { shields: { uid } } });
     if (updateRes.ok === 1) {
       const newUser = await this.ctx.model.User.findOne({ _id: user._id });
       this.ctx.body = { success: true, shields: newUser.shields };
