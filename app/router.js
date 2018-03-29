@@ -45,6 +45,12 @@ module.exports = app => {
 
   router.get('/user/get', controller.user.get);
 
+  router.post('/user/focus', controller.user.focus);
+
+  router.post('/user/cancelFocus', controller.user.cancelFocus);
+
+  router.post('/user/shields', controller.user.shields);
+
   router.post('/user/getNotifyNoRead', controller.user.getNotifyNoRead);
 
   router.post('/user/readNotify', controller.user.readNotify);

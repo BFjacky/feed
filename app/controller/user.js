@@ -10,6 +10,84 @@ class UserController extends Controller {
     const { user } = this.ctx;
     this.ctx.body = user;
   }
+  async focus() {
+    const { user } = this.ctx;
+    const { uid } = this.ctx.request.body;
+    if (!user) {
+      this.ctx.body = { success: false, message: '未获得到user' };
+      return;
+    }
+    if (!user._id) {
+      this.ctx.body = { success: false, message: '未获得到_id' };
+      return;
+    }
+    // 判断一下该用户是否已经关注了此User
+    for (const focusUser of user.focus) {
+      if (focusUser.uid == uid) {
+        this.ctx.body = { success: false, message: '不可重复关注' };
+        return;
+      }
+    }
+    const updateRes = await this.ctx.model.User.update({ _id: user._id }, { $push: { focus: { uid } } });
+    if (updateRes.ok === 1) {
+      const newUser = await this.ctx.model.User.findOne({ _id: user._id });
+      this.ctx.body = { success: true, focus: newUser.focus };
+      return;
+    }
+    this.ctx.body = { success: false };
+    return;
+  }
+
+  async cancelFocus() {
+    const { user } = this.ctx;
+    const { uid } = this.ctx.request.body;
+    if (!user) {
+      this.ctx.body = { success: false, message: '未获得到user' };
+      return;
+    }
+    if (!user._id) {
+      this.ctx.body = { success: false, message: '未获得到_id' };
+      return;
+    }
+
+    const updateRes = await this.ctx.model.User.update({ _id: user._id }, { $pull: { focus: { uid } } });
+    if (updateRes.ok === 1) {
+      const newUser = await this.ctx.model.User.findOne({ _id: user._id });
+      this.ctx.body = { success: true, focus: newUser.focus };
+      return;
+    }
+    this.ctx.body = { success: false };
+    return;
+  }
+
+  async shields() {
+    const { user } = this.ctx;
+    const { uid } = this.ctx.request.body;
+    if (!user) {
+      this.ctx.body = { success: false, message: '未获得到user' };
+      return;
+    }
+    if (!user._id) {
+      this.ctx.body = { success: false, message: '未获得到_id' };
+      return;
+    }
+    // 判断一下该用户是否已经关注了此User
+    for (const focusUser of user.shields) {
+      if (focusUser.uid == uid) {
+        this.ctx.body = { success: false, message: '不可重复屏蔽' };
+        return;
+      }
+    }
+    const updateRes = await this.ctx.model.User.update({ _id: user._id }, { $push: { shields: { uid } } });
+    if (updateRes.ok === 1) {
+      const newUser = await this.ctx.model.User.findOne({ _id: user._id });
+      this.ctx.body = { success: true, shields: newUser.shields };
+      return;
+    }
+    this.ctx.body = { success: false };
+    return;
+  }
+  // 获得所有未读通知
   async getNotifyNoRead() {
 
     // 获得一个用户所有的未读通知

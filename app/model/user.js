@@ -1,7 +1,8 @@
 'use strict';
 
 module.exports = app => {
-  const { mongoose } = app;
+  const mongoose = app.mongoose;
+  const { Schema } = mongoose;
   const UserSchema = new mongoose.Schema({
     openid: { type: String },
     avatarUrl: { type: String },
@@ -10,8 +11,12 @@ module.exports = app => {
     city: { type: String },
     province: { type: String },
     country: { type: String },
-    userId: { type: String }, // 对应用户的小程序一键登陆Id
+    minaId: { type: String }, // 对应用户的小程序一键登陆Id
     feedCookie: { type: String }, // 该用户的feedCookie
+    followers: [{ uid: Schema.Types.ObjectId }], // 追随者
+    focus: [{ uid: Schema.Types.ObjectId }], // 关注者
+    collects: [{ threadId: Schema.Types.ObjectId }], // 收藏的动态
+    shields: [{ uid: Schema.Types.ObjectId }], // 屏蔽的人
   }, { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } });
 
   return mongoose.model('User', UserSchema);
