@@ -22,6 +22,8 @@ module.exports = app => {
 
   router.get('/thread/getThread', controller.thread.getThread);
 
+  router.post('/thread/getFocusThread', controller.thread.getFocusThread);
+
   router.post('/thread/getHotThread', controller.thread.getHotThread);
 
   router.post('/thread/getThreadByType', controller.thread.getThreadByType);

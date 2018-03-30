@@ -63,6 +63,26 @@ class ThreadController extends Controller {
     return;
 
   }
+
+  async getFocusThread() {
+    // 按照时间排序
+    const { user } = this.ctx;
+    const { objectId } = this.ctx.request.body;
+    const focusIds = [];
+    for (const ele of user.focus) {
+      focusIds.push(ele.uid);
+    }
+    if (!objectId) {
+      let threads = await this.ctx.model.Thread.find({ isDelete: false || undefined, uid: { $in: focusIds } }).limit(15).sort({ _id: -1 });
+      threads = this.ctx.service.utils.checkPraised(threads, user._id);
+      this.ctx.body = { success: true, threads };
+      return;
+    }
+    let threads = await this.ctx.model.Thread.find({ _id: { $lt: objectId }, uid: { $in: user.focusIds }, isDelete: false || undefined }).limit(15).sort({ _id: -1 });
+    threads = this.ctx.service.utils.checkPraised(threads, user._id);
+    this.ctx.body = { success: true, threads };
+    return;
+  }
   async getHotThread() {
     // 判断objectId 是否存在与 objectids中
     function checkObjectId(objectIds, objectId) {
