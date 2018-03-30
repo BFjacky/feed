@@ -8,6 +8,7 @@ class UserController extends Controller {
   async get() {
     // 获得当前用户信息
     const { user } = this.ctx;
+    user.openid = '';
     this.ctx.body = user;
   }
   async getShieldUesrById() {
@@ -50,6 +51,9 @@ class UserController extends Controller {
     }
     const updateRes = await this.ctx.model.User.update({ _id: user._id }, { $push: { focus: { uid } } });
     if (updateRes.ok === 1) {
+      // 在目标user的follower中添加此user
+      // FIX
+      const updateRes2 = await this.ctx.model.User.update({ _id: uid }, { $push: { followers: { uid: user._id } } });
       const newUser = await this.ctx.model.User.findOne({ _id: user._id });
       this.ctx.body = { success: true, focus: newUser.focus };
       return;
@@ -72,6 +76,8 @@ class UserController extends Controller {
 
     const updateRes = await this.ctx.model.User.update({ _id: user._id }, { $pull: { focus: { uid } } });
     if (updateRes.ok === 1) {
+      // FIX
+      const updateRes2 = await this.ctx.model.User.update({ _id: uid }, { $pull: { followers: { uid: user._id } } });
       const newUser = await this.ctx.model.User.findOne({ _id: user._id });
       this.ctx.body = { success: true, focus: newUser.focus };
       return;

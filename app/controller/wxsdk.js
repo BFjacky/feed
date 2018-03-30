@@ -5,18 +5,18 @@ const axios = require('axios');
 const path = require('path');
 const fs = require('fs');
 
-const config = {
-  appId: 'wx9fd6bbc89436a5ee',
-  appSecret: '338e4bea61cc75fe5f69ad9a1416e893',
-  // appSecret: '338e4bea61cc75fe5f69ad9a1416e893',
-  jsUrl: 'http://myccc.feit.me',
-};
 // const config = {
-//   appId: 'wx3ff5c48ba9ac6552',
-//   appSecret: '4e7735e37c9c493a5ead5cb07c6cd6fd',
+//   appId: 'wx9fd6bbc89436a5ee',
+//   appSecret: '338e4bea61cc75fe5f69ad9a1416e893',
 //   // appSecret: '338e4bea61cc75fe5f69ad9a1416e893',
-//   jsUrl: 'https://neau-lib.xiaonei.io/feed',
+//   jsUrl: 'http://myccc.feit.me',
 // };
+const config = {
+  appId: 'wx3ff5c48ba9ac6552',
+  appSecret: '4e7735e37c9c493a5ead5cb07c6cd6fd',
+  // appSecret: '338e4bea61cc75fe5f69ad9a1416e893',
+  jsUrl: 'https://neau-lib.xiaonei.io/feed',
+};
 // 缓存access_token
 const access_token = '7_51XmytDGehNLbnzGAVuo2eYY4jxsOav6_e318coUwkLo4ctDzNiJbSbPTpMwSJKwnIoZlvJuGBtN6avPnBmHoz_iNlOh10aUu6KlI4Q4jgarMiPyeHhT9fKQaqvoQecm58avXogNy_oTUwgiAJHdAGAHQO';
 const ticket = 'kgt8ON7yVITDhtdwci0qeTBUy1h11jipFl0kX7yhsInbBqnPz7bEvgMLuexwxIi15p2TL9FUXFMTDGa2ipDkgg';
