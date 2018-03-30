@@ -10,12 +10,22 @@ class UserController extends Controller {
     const { user } = this.ctx;
     this.ctx.body = user;
   }
-  async getUesrById() {
+  async getShieldUesrById() {
     const { user } = this.ctx;
     const users = [];
     const fields = [ 'avatarUrl', 'gender', 'nickName', 'city', 'province', 'country' ];
     for (const shield of user.shields) {
       const userRes = await this.ctx.model.User.findOne({ _id: shield.uid }, fields);
+      users.push(userRes);
+    }
+    this.ctx.body = { success: true, users };
+  }
+  async getFocusUesrById() {
+    const { user } = this.ctx;
+    const users = [];
+    const fields = [ 'avatarUrl', 'gender', 'nickName', 'city', 'province', 'country' ];
+    for (const focus of user.focus) {
+      const userRes = await this.ctx.model.User.findOne({ _id: focus.uid }, fields);
       users.push(userRes);
     }
     this.ctx.body = { success: true, users };

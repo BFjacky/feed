@@ -78,7 +78,7 @@ class ThreadController extends Controller {
       this.ctx.body = { success: true, threads };
       return;
     }
-    let threads = await this.ctx.model.Thread.find({ _id: { $lt: objectId }, uid: { $in: user.focusIds }, isDelete: false || undefined }).limit(15).sort({ _id: -1 });
+    let threads = await this.ctx.model.Thread.find({ _id: { $lt: objectId }, uid: { $in: focusIds }, isDelete: false || undefined }).limit(15).sort({ _id: -1 });
     threads = this.ctx.service.utils.checkPraised(threads, user._id);
     this.ctx.body = { success: true, threads };
     return;
