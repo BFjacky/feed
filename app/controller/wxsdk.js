@@ -5,39 +5,51 @@ const axios = require('axios');
 const path = require('path');
 const fs = require('fs');
 
-// const config = {
-//   appId: 'wx9fd6bbc89436a5ee',
-//   appSecret: '338e4bea61cc75fe5f69ad9a1416e893',
-//   // appSecret: '338e4bea61cc75fe5f69ad9a1416e893',
-//   jsUrl: 'http://myccc.feit.me',
-// };
 const config = {
-  appId: 'wx3ff5c48ba9ac6552',
-  appSecret: '4e7735e37c9c493a5ead5cb07c6cd6fd',
+  appId: 'wx9fd6bbc89436a5ee',
+  appSecret: '338e4bea61cc75fe5f69ad9a1416e893',
   // appSecret: '338e4bea61cc75fe5f69ad9a1416e893',
-  jsUrl: 'https://neau-lib.xiaonei.io/feed',
+  jsUrl: 'http://myccc.feit.me/#/',
 };
+// const config = {
+//   appId: 'wx3ff5c48ba9ac6552',
+//   appSecret: '4e7735e37c9c493a5ead5cb07c6cd6fd',
+//   // appSecret: '338e4bea61cc75fe5f69ad9a1416e893',
+//   jsUrl: 'https://neau-lib.xiaonei.io/feed',
+// };
 // 缓存access_token
-const access_token = '7_51XmytDGehNLbnzGAVuo2eYY4jxsOav6_e318coUwkLo4ctDzNiJbSbPTpMwSJKwnIoZlvJuGBtN6avPnBmHoz_iNlOh10aUu6KlI4Q4jgarMiPyeHhT9fKQaqvoQecm58avXogNy_oTUwgiAJHdAGAHQO';
-const ticket = 'kgt8ON7yVITDhtdwci0qeTBUy1h11jipFl0kX7yhsInbBqnPz7bEvgMLuexwxIi15p2TL9FUXFMTDGa2ipDkgg';
-const tokenUrl = `https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appId=${config.appId}&secret=${config.appSecret}`;
-const ticketUrl = `https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=${access_token}&type=jsapi`;
 class wxsdkController extends Controller {
   async sign() {
-
-    // const tokenRes = await axios({
-    //   url: tokenUrl,
-    // });
-    // console.log(tokenRes.data);
-
-    // const ticketRes = await axios({
-    //   url: ticketUrl,
-    // });
-    // console.log(ticketRes.data);
-
     const { nonceStr, timestamp } = this.ctx.request.query;
-    const finalStr = 'jsapi_ticket=' + ticket + '&noncestr=' + nonceStr + '&timestamp=' + timestamp + '&url=' + config.jsUrl;
+    let access_token = await this.ctx.app.redis.get('accessToken');
+    const tokenUrl = `https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appId=${config.appId}&secret=${config.appSecret}`;
+    const ticketUrl = `https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=${access_token}&type=jsapi`;
+    // 收次请求获得ticket
+    let ticketRes = await axios({
+      url: ticketUrl,
+    });
+    // errcode 为 0 则说明成功了
+    if (ticketRes.data.errcode !== 0) {
+      // 失败原因 多数为 accessToken过期
+      const tokenRes = await axios({
+        url: tokenUrl,
+      });
+      const newAccessToken = tokenRes.data.access_token;
+      await this.ctx.app.redis.set('accessToken', newAccessToken);
+      access_token = await this.ctx.app.redis.get('accessToken');
+      // 再次请求获得ticket
+      ticketRes = await axios({
+        url: ticketUrl,
+      });
+    }
+    const ticket = ticketRes.data.ticket;
+    if (ticketRes.data.errcode !== 0) {
+      console.log('再一次sign wx-sdk 失败,无法获得ticket');
+      this.ctx.body = { success: false, message: '再一次sign wx-sdk 失败,无法获得ticket' };
+      return;
+    }
 
+    const finalStr = 'jsapi_ticket=' + ticket + '&noncestr=' + nonceStr + '&timestamp=' + timestamp + '&url=' + config.jsUrl;
     const signature = crypto.createHash('sha1').update(finalStr).digest('hex');
     this.ctx.body = { signature };
 
@@ -60,7 +72,7 @@ class wxsdkController extends Controller {
       const { nickname, sex, province, city, country, headimgurl, privilege, unionid } = userInfoRes.data;
       // 获得此用户的cookie串,存入数据库中
       const { feedCookie } = this.ctx;
-      console.log('oauth鉴权:', feedCookie, userInfoRes.data);
+      console.log('oauth鉴权213:', feedCookie, userInfoRes.data);
       await this.ctx.model.User.update({ openid }, { avatarUrl: headimgurl, gender: sex, nickName: nickname, city, province, country, feedCookie }, { mutil: true, upsert: true });
       // 鉴定该access_token 是否有效
       // code...

@@ -149,7 +149,7 @@ class UserController extends Controller {
         const intervalId = setInterval(async () => {
           times--;
           const flag = await _this.ctx.app.redis.get(user._id);
-          console.log('redis中:', flag);
+          // console.log('redis中:', flag);
           if (flag == 'true') {
             // 已经有新通知了
             const notifies = await _this.ctx.model.Notify.find({ uid: user._id, hasRead: false }).sort({ _id: -1 });

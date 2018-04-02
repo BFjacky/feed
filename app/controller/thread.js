@@ -22,7 +22,6 @@ class ThreadController extends Controller {
     this.ctx.body = { success: true };
   }
   async deleteThread() {
-    console.log('here');
     const { thread } = this.ctx.request.body;
     const { user } = this.ctx;
     if (thread.uid != user._id) {
@@ -51,13 +50,17 @@ class ThreadController extends Controller {
     // 按照时间排序
     const { user } = this.ctx;
     const { objectId } = this.ctx.request.query;
+    const shieldIds = [];
+    for (const ele of user.shields) {
+      shieldIds.push(ele.uid);
+    }
     if (!objectId) {
-      let threads = await this.ctx.model.Thread.find({ isDelete: false || undefined }).limit(15).sort({ _id: -1 });
+      let threads = await this.ctx.model.Thread.find({ isDelete: false || undefined, uid: { $nin: shieldIds } }).limit(15).sort({ _id: -1 });
       threads = this.ctx.service.utils.checkPraised(threads, user._id);
       this.ctx.body = { success: true, threads };
       return;
     }
-    let threads = await this.ctx.model.Thread.find({ _id: { $lt: objectId }, isDelete: false || undefined }).limit(15).sort({ _id: -1 });
+    let threads = await this.ctx.model.Thread.find({ _id: { $lt: objectId }, isDelete: false || undefined, uid: { $nin: shieldIds } }).limit(15).sort({ _id: -1 });
     threads = this.ctx.service.utils.checkPraised(threads, user._id);
     this.ctx.body = { success: true, threads };
     return;
@@ -96,18 +99,22 @@ class ThreadController extends Controller {
     // 按照热度排序
     const { objectIds } = this.ctx.request.body;
     const { user } = this.ctx;
+    const shieldIds = [];
+    for (const ele of user.shields) {
+      shieldIds.push(ele.uid);
+    }
     if (!objectIds) {
-      const threads2 = await this.ctx.model.Thread.find({ isDelete: false || undefined }).sort({ praises: -1, _id: -1 });
+      const threads2 = await this.ctx.model.Thread.find({ isDelete: false || undefined, uid: { $nin: shieldIds } }).sort({ praises: -1, _id: -1 });
       for (const thread of threads2) {
         // console.log(thread.praises);
       }
-      let threads = await this.ctx.model.Thread.find({ isDelete: false || undefined }).limit(15).sort({ praises: -1, _id: -1 });
+      let threads = await this.ctx.model.Thread.find({ isDelete: false || undefined, uid: { $nin: shieldIds } }).limit(15).sort({ praises: -1, _id: -1 });
       threads = this.ctx.service.utils.checkPraised(threads, user._id);
       this.ctx.body = { success: true, threads };
       return;
     }
     // 根据前端传递的objectIds判断是否重复
-    const tempThreads = await this.ctx.model.Thread.find({ isDelete: false || undefined }).sort({ praises: -1, _id: -1 });
+    const tempThreads = await this.ctx.model.Thread.find({ isDelete: false || undefined, uid: { $nin: shieldIds } }).sort({ praises: -1, _id: -1 });
     let threads = [];
     for (const thread of tempThreads) {
       if (!checkObjectId(objectIds, thread._id)) {
@@ -126,13 +133,17 @@ class ThreadController extends Controller {
     // 按照时间排序
     const { user } = this.ctx;
     const { objectId, themeText } = this.ctx.request.body;
+    const shieldIds = [];
+    for (const ele of user.shields) {
+      shieldIds.push(ele.uid);
+    }
     if (!objectId) {
-      let threads = await this.ctx.model.Thread.find({ isDelete: false || undefined, themeText }).limit(15).sort({ _id: -1 });
+      let threads = await this.ctx.model.Thread.find({ isDelete: false || undefined, themeText, uid: { $nin: shieldIds } }).limit(15).sort({ _id: -1 });
       threads = this.ctx.service.utils.checkPraised(threads, user._id);
       this.ctx.body = { success: true, threads };
       return;
     }
-    let threads = await this.ctx.model.Thread.find({ _id: { $lt: objectId }, themeText, isDelete: false || undefined }).limit(15).sort({ _id: -1 });
+    let threads = await this.ctx.model.Thread.find({ _id: { $lt: objectId }, themeText, isDelete: false || undefined, uid: { $nin: shieldIds } }).limit(15).sort({ _id: -1 });
     threads = this.ctx.service.utils.checkPraised(threads, user._id);
     this.ctx.body = { success: true, threads };
     return;
