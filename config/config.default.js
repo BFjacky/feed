@@ -51,13 +51,27 @@ module.exports = appInfo => {
     credentials: true,
   };
 
+  // socket.io
+  exports.io = {
+    init: {}, // passed to engine.io
+    namespace: {
+      '/': {
+        connectionMiddleware: [ 'auth' ],
+        packetMiddleware: [],
+      },
+    },
+    redis: {
+      host: '127.0.0.1',
+      port: 6379,
+    },
+  };
+
   // add static file server
   config.static = {
     prefix: '/',
     dir: path.join(appInfo.baseDir, 'app/public'),
     dynamic: true,
   };
-
 
   // urls
   config.url = {

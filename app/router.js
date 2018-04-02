@@ -6,6 +6,8 @@
 module.exports = app => {
   const { router, controller } = app;
 
+  app.io.of('/').route('init', app.io.controller.user.init);
+
   router.get('/', controller.home.index);
 
   router.get('/oauth', controller.wxsdk.oauth);

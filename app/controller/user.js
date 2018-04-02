@@ -3,6 +3,7 @@
 'use strict';
 
 const Controller = require('egg').Controller;
+
 const _ = require('lodash');
 class UserController extends Controller {
   async get() {
@@ -137,19 +138,17 @@ class UserController extends Controller {
   }
   // 获得所有未读通知
   async getNotifyNoRead() {
-
     // 获得一个用户所有的未读通知
     const { user } = this.ctx;
     const { firstTime } = this.ctx.request.body;
     const _this = this;
-
     const getNewNotify = async function() {
       let times = 10;
       return new Promise(async (resolve, reject) => {
         const intervalId = setInterval(async () => {
           times--;
           const flag = await _this.ctx.app.redis.get(user._id);
-          // console.log('redis中:', flag);
+          console.log('redis中:', flag);
           if (flag == 'true') {
             // 已经有新通知了
             const notifies = await _this.ctx.model.Notify.find({ uid: user._id, hasRead: false }).sort({ _id: -1 });

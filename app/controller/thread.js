@@ -212,13 +212,13 @@ class ThreadController extends Controller {
   }
 
   async newComment() {
+    const Emitter = this.ctx.service.event.Emitter();
     const { _id, comment, sourse } = this.ctx.request.body;
     const { user } = this.ctx;
     if (!user || !user._id) {
       this.ctx.body = { success: false, message: '请先登录' };
       return;
     }
-
     // 判断此条comment 的对象是 thread 还是 comment
     if (sourse === 'thread') {
       const commentData = new this.ctx.model.Comment({ threadSourceId: _id, content: comment.content, avatarUrl: user.avatarUrl, nickName: user.nickName, uid: user._id, praises: 0, comments: 0 });
@@ -226,12 +226,13 @@ class ThreadController extends Controller {
       const updateRes = await this.ctx.model.Thread.update({ _id }, { $inc: { comments: 1 }, $push: { commentInfo: { avatarUrl: user.avatarUrl, uid: user._id, content: comment.content, nickName: user.nickName } } });
 
       // 生成一条通知
-      const sourseThread = await this.ctx.model.Thread.findOne({ _id });
-      const sourseUid = sourseThread.uid;
-      const notifyData = new this.ctx.model.Notify({ uid: sourseUid, hasRead: false, threadSourceId: _id, commentInfo: { avatarUrl: user.avatarUrl, uid: user._id, content: comment.content, nickName: user.nickName }, commentId: newComment._id });
+      const sourceThread = await this.ctx.model.Thread.findOne({ _id });
+      const sourceUid = sourceThread.uid;
+      const notifyData = new this.ctx.model.Notify({ uid: sourceUid, hasRead: false, threadSourceId: _id, commentInfo: { avatarUrl: user.avatarUrl, uid: user._id, content: comment.content, nickName: user.nickName }, commentId: newComment._id });
       await notifyData.save();
       // 生成新通知事件
-      await this.ctx.app.redis.set(sourseUid, true);
+      await this.ctx.app.redis.set(sourceUid, true);
+      Emitter.emit('newNotify', sourceUid);
 
       if (updateRes.ok) {
         this.ctx.body = { success: true };
@@ -246,12 +247,13 @@ class ThreadController extends Controller {
       const updateRes = await this.ctx.model.Comment.update({ _id }, { $inc: { comments: 1 }, $push: { commentInfo: { avatarUrl: user.avatarUrl, uid: user._id, content: comment.content, nickName: user.nickName } } });
 
       // 生成一条通知
-      const sourseComment = await this.ctx.model.Comment.findOne({ _id });
-      const sourseUid = sourseComment.uid;
-      const notifyData = new this.ctx.model.Notify({ uid: sourseUid, hasRead: false, commentSourceId: _id, commentInfo: { avatarUrl: user.avatarUrl, uid: user._id, content: comment.content }, commentId: newComment._id });
+      const sourceComment = await this.ctx.model.Comment.findOne({ _id });
+      const sourceUid = sourceComment.uid;
+      const notifyData = new this.ctx.model.Notify({ uid: sourceUid, hasRead: false, commentSourceId: _id, commentInfo: { avatarUrl: user.avatarUrl, uid: user._id, content: comment.content }, commentId: newComment._id });
       await notifyData.save();
       // 生成新通知事件
-      await this.ctx.app.redis.set(sourseUid, true);
+      await this.ctx.app.redis.set(sourceUid, true);
+      Emitter.emit('newNotify', sourceUid);
 
       if (updateRes.ok) {
         this.ctx.body = { success: true };
