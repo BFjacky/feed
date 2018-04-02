@@ -231,7 +231,6 @@ class ThreadController extends Controller {
       const notifyData = new this.ctx.model.Notify({ uid: sourceUid, hasRead: false, threadSourceId: _id, commentInfo: { avatarUrl: user.avatarUrl, uid: user._id, content: comment.content, nickName: user.nickName }, commentId: newComment._id });
       await notifyData.save();
       // 生成新通知事件
-      await this.ctx.app.redis.set(sourceUid, true);
       Emitter.emit('newNotify', sourceUid);
 
       if (updateRes.ok) {
@@ -252,7 +251,6 @@ class ThreadController extends Controller {
       const notifyData = new this.ctx.model.Notify({ uid: sourceUid, hasRead: false, commentSourceId: _id, commentInfo: { avatarUrl: user.avatarUrl, uid: user._id, content: comment.content }, commentId: newComment._id });
       await notifyData.save();
       // 生成新通知事件
-      await this.ctx.app.redis.set(sourceUid, true);
       Emitter.emit('newNotify', sourceUid);
 
       if (updateRes.ok) {

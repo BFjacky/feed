@@ -62,7 +62,5 @@ module.exports = app => {
 
   router.post('/user/cancelShields', controller.user.cancelShields);
 
-  router.post('/user/getNotifyNoRead', controller.user.getNotifyNoRead);
-
   router.post('/user/readNotify', controller.user.readNotify);
 };
