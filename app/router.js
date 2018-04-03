@@ -40,6 +40,8 @@ module.exports = app => {
 
   router.post('/comment/getOneComment', controller.comment.getOneComment);
 
+  router.post('/comment/getAllSubComments', controller.comment.getAllSubComments);
+
   router.get('/comment/getComment', controller.comment.getComment);
 
   router.get('/comment/getHotComment', controller.comment.getHotComment);
