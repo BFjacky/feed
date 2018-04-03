@@ -17,13 +17,14 @@ module.exports = app => {
     comments: Number, // 此条comment的评论总数
     commentInfo: [{ avatarUrl: String, uid: Schema.Types.ObjectId, content: String, nickName: String, hasread: Boolean }], //
     content: { type: String, maxlength: 300 }, // 内容
-    images: [{
+    imgs: [{
       aid: Schema.Types.ObjectId, // attachment id
-      attachment: String, // attachment的路径名，例如feed/${date}/${md5}.${ext}
+      key: String, // attachment的路径名，例如feed/${date}/${md5}.${ext}   //原attachment字段
       isGif: Boolean, // 是否是动图
       height: Number, // 图片高度
       width: Number, // 图片宽度
       url: String, // 图片缩略图地址，上传到七牛后得到的地址
+      urlMiddle: String,
       sourceUrl: String, // 原图地址，上传到七牛后得到的地址
     }],
     praises: Number, // 点赞数
