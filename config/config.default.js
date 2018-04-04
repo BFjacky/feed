@@ -64,6 +64,18 @@ module.exports = appInfo => {
       host: '127.0.0.1',
       port: 6379,
     },
+    security: {
+      csrf: {
+        ignoreJSON: true, // 默认为 false，当设置为 true 时，将会放过所有 content-type 为 `application/json` 的请求
+      },
+      xframe: {
+        enable: false,
+      },
+      methodnoallow: {
+        enable: false,
+      },
+      domainWhiteList: [ 'http://myccc.feit.me', 'http://localhost:8080' ],
+    },
   };
 
   // add static file server
