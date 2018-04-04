@@ -228,7 +228,8 @@ class ThreadController extends Controller {
       // 生成一条通知
       const sourceThread = await this.ctx.model.Thread.findOne({ _id });
       const sourceUid = sourceThread.uid;
-      const notifyData = new this.ctx.model.Notify({ uid: sourceUid, hasRead: false, threadSourceId: _id, imgs: comment.imgs, commentInfo: { avatarUrl: user.avatarUrl, uid: user._id, content: comment.content, nickName: user.nickName }, commentId: newComment._id });
+      const sourceContent = sourceThread.content;
+      const notifyData = new this.ctx.model.Notify({ uid: sourceUid, hasRead: false, threadSourceId: _id, sourceContent, imgs: comment.imgs, commentInfo: { avatarUrl: user.avatarUrl, uid: user._id, content: comment.content, nickName: user.nickName }, commentId: newComment._id });
       await notifyData.save();
       // 生成新通知事件
       Emitter.emit('newNotify', sourceUid);
@@ -248,7 +249,8 @@ class ThreadController extends Controller {
       // 生成一条通知
       const sourceComment = await this.ctx.model.Comment.findOne({ _id });
       const sourceUid = sourceComment.uid;
-      const notifyData = new this.ctx.model.Notify({ uid: sourceUid, hasRead: false, commentSourceId: _id, imgs: comment.imgs, commentInfo: { avatarUrl: user.avatarUrl, uid: user._id, content: comment.content }, commentId: newComment._id });
+      const sourceContent = sourceComment.content;
+      const notifyData = new this.ctx.model.Notify({ uid: sourceUid, hasRead: false, commentSourceId: _id, sourceContent, imgs: comment.imgs, commentInfo: { avatarUrl: user.avatarUrl, uid: user._id, content: comment.content }, commentId: newComment._id });
       await notifyData.save();
       // 生成新通知事件
       Emitter.emit('newNotify', sourceUid);
