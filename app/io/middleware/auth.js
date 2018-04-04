@@ -1,9 +1,7 @@
 'use strict';
 module.exports = app => {
   return async (ctx, next) => {
-    ctx.socket.emit('res', 'connected!lalalalala');
+    console.log('连接上了');
     await next();
-    // execute when disconnect.
-    console.log('disconnection!');
   };
 };
