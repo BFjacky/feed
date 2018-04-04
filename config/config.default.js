@@ -52,7 +52,7 @@ module.exports = appInfo => {
   };
 
   // socket.io
-  exports.io = {
+  config.io = {
     init: {}, // passed to engine.io
     namespace: {
       '/': {
