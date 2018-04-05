@@ -32,6 +32,16 @@ class UserController extends Controller {
     }
     this.ctx.body = { success: true, users };
   }
+  async getFollowersUesrById() {
+    const { user } = this.ctx;
+    const users = [];
+    const fields = [ 'avatarUrl', 'gender', 'nickName', 'city', 'province', 'country' ];
+    for (const followers of user.followers) {
+      const userRes = await this.ctx.model.User.findOne({ _id: followers.uid }, fields);
+      users.push(userRes);
+    }
+    this.ctx.body = { success: true, users };
+  }
   async focus() {
     const { user } = this.ctx;
     const { uid } = this.ctx.request.body;
@@ -143,53 +153,20 @@ class UserController extends Controller {
     }
     this.ctx.body = { success: true };
   }
-  // // 获得所有未读通知
-  // async getNotifyNoRead() {
-  //   // 获得一个用户所有的未读通知
-  //   const { user } = this.ctx;
-  //   const { firstTime } = this.ctx.request.body;
-  //   const _this = this;
-  //   const getNewNotify = async function() {
-  //     let times = 10;
-  //     return new Promise(async (resolve, reject) => {
-  //       const intervalId = setInterval(async () => {
-  //         times--;
-  //         const flag = await _this.ctx.app.redis.get(user._id);
-  //         console.log('redis中:', flag);
-  //         if (flag == 'true') {
-  //           // 已经有新通知了
-  //           const notifies = await _this.ctx.model.Notify.find({ uid: user._id, hasRead: false }).sort({ _id: -1 });
-  //           await _this.ctx.app.redis.set(user._id, false);
-  //           resolve(notifies);
-  //           clearInterval(intervalId);
-  //         }
-  //         if (times <= 0) {
-  //           resolve([]);
-  //           clearInterval(intervalId);
-  //         }
-  //       }, 1000);
-  //     });
-  //   };
+  async getOldNotifies() {
+    // 按照时间排序
+    const { user } = this.ctx;
+    const { objectId } = this.ctx.request.query;
 
-  //   // 如果是第一次来查询 通知 ,则直接返回
-  //   if (firstTime) {
-  //     let notifies = await this.ctx.model.Notify.find({ uid: user._id, hasRead: false }).sort({ _id: -1 });
-  //     notifies = await this.ctx.service.utils.getContents(notifies);
-  //     this.ctx.body = { success: true, notifies };
-  //     await this.ctx.app.redis.set(user._id, false);
-  //     return;
-  //   }
-  //   // 第2-n 次来查询通知，需等新通知事件
-  //   let notifies = await getNewNotify();
-  //   console.log('第二次查询');
-  //   if (notifies.length === 0) {
-  //     this.ctx.body = { success: false, notifies };
-  //     return;
-  //   }
-  //   notifies = await this.ctx.service.utils.getContents(notifies);
-  //   this.ctx.body = { success: true, notifies };
-  //   return;
-  // }
+    if (!objectId) {
+      const oldNotifies = await this.ctx.model.Notify.find({ uid: user._id, hasRead: true }).limit(15).sort({ _id: -1 });
+      this.ctx.body = { success: true, oldNotifies };
+      return;
+    }
+    const oldNotifies = await this.ctx.model.Notify.find({ _id: { $lt: objectId }, uid: user._id, hasRead: true }).limit(15).sort({ _id: -1 });
+    this.ctx.body = { success: true, oldNotifies };
+    return;
+  }
 
 }
 

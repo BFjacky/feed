@@ -46,13 +46,29 @@ class ThreadController extends Controller {
     this.ctx.body = { success: true, thread };
     return;
   }
+  // 获得一个comment 所属的源头thread
+  async getSourceThread() {
+    try {
+      const { commentId } = this.ctx.request.body;
+      let nowComment = await this.ctx.model.Comment.findOne({ _id: commentId });
+      while (nowComment.commentSourceId) {
+        nowComment = await this.ctx.model.Comment.findOne({ _id: nowComment.commentSourceId });
+      }
+      const thread = await this.ctx.model.Thread.findOne({ _id: nowComment.threadSourceId });
+      this.ctx.body = { success: true, thread };
+    } catch (error) {
+      this.ctx.body = { success: false, error };
+    }
+  }
   async getThread() {
     // 按照时间排序
     const { user } = this.ctx;
     const { objectId } = this.ctx.request.query;
     const shieldIds = [];
-    for (const ele of user.shields) {
-      shieldIds.push(ele.uid);
+    if (user.shields) {
+      for (const ele of user.shields) {
+        shieldIds.push(ele.uid);
+      }
     }
     if (!objectId) {
       let threads = await this.ctx.model.Thread.find({ isDelete: false || undefined, uid: { $nin: shieldIds } }).limit(15).sort({ _id: -1 });
@@ -72,8 +88,10 @@ class ThreadController extends Controller {
     const { user } = this.ctx;
     const { objectId } = this.ctx.request.body;
     const focusIds = [];
-    for (const ele of user.focus) {
-      focusIds.push(ele.uid);
+    if (user.focus) {
+      for (const ele of user.focus) {
+        focusIds.push(ele.uid);
+      }
     }
     if (!objectId) {
       let threads = await this.ctx.model.Thread.find({ isDelete: false || undefined, uid: { $in: focusIds } }).limit(15).sort({ _id: -1 });
@@ -100,8 +118,10 @@ class ThreadController extends Controller {
     const { objectIds } = this.ctx.request.body;
     const { user } = this.ctx;
     const shieldIds = [];
-    for (const ele of user.shields) {
-      shieldIds.push(ele.uid);
+    if (user.shields) {
+      for (const ele of user.shields) {
+        shieldIds.push(ele.uid);
+      }
     }
     if (!objectIds) {
       const threads2 = await this.ctx.model.Thread.find({ isDelete: false || undefined, uid: { $nin: shieldIds } }).sort({ praises: -1, _id: -1 });
@@ -134,8 +154,10 @@ class ThreadController extends Controller {
     const { user } = this.ctx;
     const { objectId, themeText } = this.ctx.request.body;
     const shieldIds = [];
-    for (const ele of user.shields) {
-      shieldIds.push(ele.uid);
+    if (user.shields) {
+      for (const ele of user.shields) {
+        shieldIds.push(ele.uid);
+      }
     }
     if (!objectId) {
       let threads = await this.ctx.model.Thread.find({ isDelete: false || undefined, themeText, uid: { $nin: shieldIds } }).limit(15).sort({ _id: -1 });
@@ -152,15 +174,16 @@ class ThreadController extends Controller {
   async getThreadByUser() {
     // 获得某一个用户的thread
     const { user } = this.ctx;
-    const { objectId } = this.ctx.request.body;
+    const { objectId, uid } = this.ctx.request.body;
+    // 如果没传uid这个参数则，默认为查询本user的threads,否则查询传过来的uid的thread
     if (!objectId) {
-      let threads = await this.ctx.model.Thread.find({ uid: user._id, isDelete: false || undefined }).limit(15).sort({ _id: -1 });
-      threads = this.ctx.service.utils.checkPraised(threads, user._id);
+      let threads = await this.ctx.model.Thread.find({ uid: uid ? uid : user._id, isDelete: false || undefined }).limit(15).sort({ _id: -1 });
+      threads = this.ctx.service.utils.checkPraised(threads, uid ? uid : user._id);
       this.ctx.body = { success: true, threads };
       return;
     }
-    let threads = await this.ctx.model.Thread.find({ _id: { $lt: objectId }, uid: user._id, isDelete: false || undefined }).limit(15).sort({ _id: -1 });
-    threads = this.ctx.service.utils.checkPraised(threads, user._id);
+    let threads = await this.ctx.model.Thread.find({ _id: { $lt: objectId }, uid: uid ? uid : user._id, isDelete: false || undefined }).limit(15).sort({ _id: -1 });
+    threads = this.ctx.service.utils.checkPraised(threads, uid ? uid : user._id);
     this.ctx.body = { success: true, threads };
     return;
   }

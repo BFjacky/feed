@@ -22,6 +22,8 @@ module.exports = app => {
 
   router.post('/thread/getOneThread', controller.thread.getOneThread);
 
+  router.post('/thread/getSourceThread', controller.thread.getSourceThread);
+
   router.get('/thread/getThread', controller.thread.getThread);
 
   router.post('/thread/getFocusThread', controller.thread.getFocusThread);
@@ -55,6 +57,10 @@ module.exports = app => {
   router.get('/user/getShieldUesrById', controller.user.getShieldUesrById);
 
   router.get('/user/getFocusUesrById', controller.user.getFocusUesrById);
+
+  router.get('/user/getFollowersUesrById', controller.user.getFollowersUesrById);
+
+  router.get('/user/getOldNotifies', controller.user.getOldNotifies);
 
   router.post('/user/focus', controller.user.focus);
 
