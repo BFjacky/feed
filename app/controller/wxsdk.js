@@ -8,13 +8,11 @@ const fs = require('fs');
 // const config = {
 //   appId: 'wx9fd6bbc89436a5ee',
 //   appSecret: '338e4bea61cc75fe5f69ad9a1416e893',
-//   // appSecret: '338e4bea61cc75fe5f69ad9a1416e893',
 //   jsUrl: 'http://myccc.feit.me/#/',
 // };
 const config = {
   appId: 'wx3ff5c48ba9ac6552',
   appSecret: '4e7735e37c9c493a5ead5cb07c6cd6fd',
-  // appSecret: '338e4bea61cc75fe5f69ad9a1416e893',
   jsUrl: 'https://neau-lib.xiaonei.io/feed',
 };
 // 缓存access_token
