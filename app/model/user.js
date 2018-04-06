@@ -13,6 +13,7 @@ module.exports = app => {
     country: { type: String },
     minaId: { type: String }, // 对应用户的小程序一键登陆Id
     feedCookie: { type: String }, // 该用户的feedCookie
+    pass: Boolean, // 及格认证,通过答题测试才可以发状态
     followers: [{ uid: Schema.Types.ObjectId }], // 追随者
     focus: [{ uid: Schema.Types.ObjectId }], // 关注者
     collects: [{ threadId: Schema.Types.ObjectId }], // 收藏的动态
