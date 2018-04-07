@@ -12,6 +12,11 @@ class UserController extends Controller {
     user.openid = '';
     this.ctx.body = user;
   }
+  async userpass() {
+    const { user } = this.ctx;
+    await this.ctx.model.User.update({ _id: user._id }, { pass: true });
+    this.ctx.body = { success: true };
+  }
   async getShieldUesrById() {
     const { user } = this.ctx;
     const users = [];

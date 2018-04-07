@@ -54,6 +54,8 @@ module.exports = app => {
 
   router.get('/user/get', controller.user.get);
 
+  router.get('/user/userpass', controller.user.userpass);
+
   router.get('/user/getShieldUesrById', controller.user.getShieldUesrById);
 
   router.get('/user/getFocusUesrById', controller.user.getFocusUesrById);
