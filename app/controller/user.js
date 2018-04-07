@@ -162,10 +162,11 @@ class UserController extends Controller {
     // 按照时间排序
     const { user } = this.ctx;
     const { objectId } = this.ctx.request.query;
-
+    console.log('前来获取oldNotify', user._id, objectId);
     if (!objectId) {
       const oldNotifies = await this.ctx.model.Notify.find({ uid: user._id, hasRead: true }).limit(15).sort({ _id: -1 });
       this.ctx.body = { success: true, oldNotifies };
+      console.log(oldNotifies);
       return;
     }
     const oldNotifies = await this.ctx.model.Notify.find({ _id: { $lt: objectId }, uid: user._id, hasRead: true }).limit(15).sort({ _id: -1 });

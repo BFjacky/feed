@@ -21,7 +21,7 @@ class ThreadController extends Controller {
       this.ctx.body = { success: false, message: '未通过答题测试' };
       return;
     }
-    const threadData = new this.ctx.model.Thread({ uid: user._id, avatarUrl: user.avatarUrl, nickName: user.nickName, content: thread.content, imgs: thread.imgs, themeText: thread.themeText, praises: 0, comments: 0 });
+    const threadData = new this.ctx.model.Thread({ uid: user._id, avatarUrl: user.avatarUrl, nickName: user.nickName, content: thread.content, imgs: thread.imgs, video: thread.video, themeText: thread.themeText, praises: 0, comments: 0 });
     await threadData.save();
     this.ctx.body = { success: true };
   }

@@ -13,6 +13,10 @@ module.exports = app => {
       url: String, // 音频地址，上传到七牛后得到的地址
     },
     content: { type: String, maxlength: 300 }, // 内容
+    video: {
+      sourceUrl: String, // 原图地址，上传到七牛后得到的地址
+      key: String, // attachment的路径名，例如feed/${date}/${md5}.${ext}   //原attachment字段
+    },
     imgs: [{
       aid: Schema.Types.ObjectId, // attachment id
       key: String, // attachment的路径名，例如feed/${date}/${md5}.${ext}   //原attachment字段
