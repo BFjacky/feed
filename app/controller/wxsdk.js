@@ -8,7 +8,7 @@ const fs = require('fs');
 // const config = {
 //   appId: 'wx9fd6bbc89436a5ee',
 //   appSecret: '338e4bea61cc75fe5f69ad9a1416e893',
-//   jsUrl: 'http://myccc.feit.me/#/',
+//   jsUrl: 'http://myccc.feit.me/',
 // };
 const config = {
   appId: 'wx3ff5c48ba9ac6552',

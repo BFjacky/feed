@@ -21,7 +21,6 @@ class FileController extends Controller {
     const sourceUrl = cdnManager.createTimestampAntiLeechUrl(domain, key, null, urlKey1, deadline);
     const url = cdnManager.createTimestampAntiLeechUrl(domain, key + '/w200', null, urlKey1, deadline);
     const urlMiddle = cdnManager.createTimestampAntiLeechUrl(domain, key + '/w500', null, urlKey1, deadline);
-    console.log(`上传图片:${urlMiddle}`);
     const { bucket } = this.app.config.qiniu2.client;
     const options = {
       scope: `${bucket}:${key}`,
