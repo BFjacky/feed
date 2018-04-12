@@ -36,6 +36,7 @@ module.exports = app => {
     isDelete: Boolean,
     hasPraised: Boolean, // 是否已经点过赞
     onlyself: Boolean, // 只有自己能看到 (惩罚限制);
+    oficialCheckPass: Boolean, // 是否已经通过了 官方检查
   }, { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } });
 
   ThreadSchema.virtual('commentList')

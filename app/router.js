@@ -8,6 +8,8 @@ module.exports = app => {
 
   app.io.of('/').route('init', app.io.controller.user.init);
   app.io.route('adminLogin', app.io.controller.user.adminLogin);
+  app.io.route('operateThread', app.io.controller.user.operateThread);
+
 
   router.get('/', controller.home.index);
 
