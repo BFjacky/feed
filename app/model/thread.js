@@ -35,6 +35,7 @@ module.exports = app => {
     themeText: String, // 此条thread所属的类别，中文描述
     isDelete: Boolean,
     hasPraised: Boolean, // 是否已经点过赞
+    onlyself: Boolean, // 只有自己能看到 (惩罚限制);
   }, { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } });
 
   ThreadSchema.virtual('commentList')

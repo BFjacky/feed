@@ -18,6 +18,7 @@ module.exports = app => {
     focus: [{ uid: Schema.Types.ObjectId }], // 关注者
     collects: [{ threadId: Schema.Types.ObjectId }], // 收藏的动态
     shields: [{ uid: Schema.Types.ObjectId }], // 屏蔽的人
+    onlyself: Boolean, // 只有自己能看到 (惩罚限制);
   }, { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } });
 
   return mongoose.model('User', UserSchema);

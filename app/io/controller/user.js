@@ -4,6 +4,8 @@
 module.exports = app => {
   class Controller extends app.Controller {
     async init() {
+      console.log('init...');
+
       const uid = this.ctx.args[0];
       if (!uid) {
         return;
@@ -24,6 +26,23 @@ module.exports = app => {
         }
       });
 
+    }
+    async adminLogin() {
+      // this.ctx.socket.disconnect(true);
+      const argspswd = this.ctx.args[0];
+      const pswd = 'jserjser';
+      await this.ctx.app.redis.set(this.ctx.socket.id, true);
+      if (argspswd === pswd) {
+        this.ctx.socket.emit('loginResult', 'success');
+        // 管理员登陆成功后，开始监听 新thread 的变化
+        console.log('登陆成功开始监听');
+        const Emitter = this.ctx.service.event.Emitter();
+        Emitter.on('newThread', async thread => {
+          this.ctx.socket.emit('newThread', thread);
+        });
+      } else {
+        this.ctx.socket.emit('loginResult', 'fail');
+      }
     }
   }
   return Controller;

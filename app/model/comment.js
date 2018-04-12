@@ -32,6 +32,7 @@ module.exports = app => {
     views: Number, // 此条comment的查看量，暂不实现
 
     hasPraised: Boolean, // 是否已经点过赞
+    onlyself: Boolean, // 只有自己能看到 (惩罚限制);
   }, { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } });
 
   return mongoose.model('Comment', CommentSchema);

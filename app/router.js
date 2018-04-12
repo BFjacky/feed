@@ -7,6 +7,7 @@ module.exports = app => {
   const { router, controller } = app;
 
   app.io.of('/').route('init', app.io.controller.user.init);
+  app.io.route('adminLogin', app.io.controller.user.adminLogin);
 
   router.get('/', controller.home.index);
 

@@ -22,7 +22,12 @@ class ThreadController extends Controller {
       return;
     }
     const threadData = new this.ctx.model.Thread({ uid: user._id, avatarUrl: user.avatarUrl, nickName: user.nickName, content: thread.content, imgs: thread.imgs, video: thread.video, themeText: thread.themeText, praises: 0, comments: 0 });
-    await threadData.save();
+    const data = await threadData.save();
+
+    // 触发新动态事件
+    const Emitter = this.ctx.service.event.Emitter();
+    Emitter.emit('newThread', data);
+
     this.ctx.body = { success: true };
   }
   async deleteThread() {
