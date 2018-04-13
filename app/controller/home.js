@@ -9,6 +9,11 @@ class HomeController extends Controller {
     this.ctx.response.append('content-type', 'text/html');
     this.ctx.response.body = res;
   }
+  async admin() {
+    const res = fs.readFileSync(path.join(__dirname, '../public', '/indexAdmin.html'));
+    this.ctx.response.append('content-type', 'text/html');
+    this.ctx.response.body = res;
+  }
 }
 
 module.exports = HomeController;

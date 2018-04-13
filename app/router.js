@@ -12,6 +12,7 @@ module.exports = app => {
 
 
   router.get('/', controller.home.index);
+  router.get('/admin', controller.home.admin);
 
   router.get('/oauth', controller.wxsdk.oauth);
 
