@@ -87,15 +87,19 @@ class CommentController extends Controller {
       this.ctx.body = { success: false, message: '该用户已经为此条comment点过赞了' };
       return;
     }
-    await this.ctx.model.Comment.update({ _id }, { $pull: { notReadPraiseInfo: { avatarUrl: user.avatarUrl, uid: user._id, nickName: user.nickName } } });
-    await this.ctx.model.Comment.update({ _id }, { $push: { notReadPraiseInfo: { avatarUrl: user.avatarUrl, uid: user._id, nickName: user.nickName } } });
     const updateRes = await this.ctx.model.Comment.update({ _id }, { $inc: { praises: 1 }, $push: { praiseInfo: { avatarUrl: user.avatarUrl, uid: user._id, nickName: user.nickName } } });
     if (updateRes.ok) {
       this.ctx.body = { success: true };
-
-      // 生成新点赞事件
+      // 生成一条通知
+      const sourceComment = comment;
+      const sourceUid = sourceComment.uid;
+      const sourceContent = sourceComment.content;
+      const notifyData = new this.ctx.model.Notify({ uid: sourceUid, hasRead: false, praise: true, commentSourceId: _id, sourceContent, commentInfo: { avatarUrl: user.avatarUrl, uid: user._id, nickName: user.nickName } });
+      await notifyData.save();
+      // 生成新通知事件
       const Emitter = this.ctx.service.event.Emitter();
-      Emitter.emit('praiseComment', _id, comment.uid);
+      Emitter.emit('newNotify', sourceUid);
+
       return;
     }
     this.ctx.body = { success: false };

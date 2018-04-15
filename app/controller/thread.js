@@ -204,8 +204,6 @@ class ThreadController extends Controller {
       this.ctx.body = { success: false, message: '请先登录' };
       return;
     }
-    // db.threads.update({ 'content': 'abcdefg' }, { $push: { praiseInfo: { avatarUrl: 'http://thirdwx.qlogo.cn/mmopen/vi_32/DYAIOgq83eoDLCmxZVNWqxx57nyagCPn3JFFy9flgDGJsswC7S28yRk6nRR9eYPKwgia0kEvEWdRvvqzel5aicicA/132', uid: '5ac832644ad5c2asdad3dc685f33', nickName: 'CYF' } } });
-    // db.threads.update({ 'content': '打打',"praises":1 }, {praiseInfo:[]});
 
     // 判断该thread中是否已经有了该用户的点赞
     const thread = await this.ctx.model.Thread.findOne({ _id });
@@ -214,15 +212,18 @@ class ThreadController extends Controller {
       this.ctx.body = { success: false, message: '该用户已经为此条thread点过赞了' };
       return;
     }
-    // 添加此用户的点赞信息
-    await this.ctx.model.Thread.update({ _id }, { $pull: { notReadPraiseInfo: { avatarUrl: user.avatarUrl, uid: user._id, nickName: user.nickName } } });
-    await this.ctx.model.Thread.update({ _id }, { $push: { notReadPraiseInfo: { avatarUrl: user.avatarUrl, uid: user._id, nickName: user.nickName } } });
     const updateRes = await this.ctx.model.Thread.update({ _id }, { $inc: { praises: 1 }, $push: { praiseInfo: { avatarUrl: user.avatarUrl, uid: user._id, nickName: user.nickName } } });
     if (updateRes.ok) {
       this.ctx.body = { success: true };
-      // 生成新点赞事件
+      // 生成一条通知
+      const sourceThread = thread;
+      const sourceUid = sourceThread.uid;
+      const sourceContent = sourceThread.content;
+      const notifyData = new this.ctx.model.Notify({ uid: sourceUid, hasRead: false, praise: true, threadSourceId: _id, sourceContent, commentInfo: { avatarUrl: user.avatarUrl, uid: user._id, nickName: user.nickName } });
+      await notifyData.save();
+      // 生成新通知事件
       const Emitter = this.ctx.service.event.Emitter();
-      Emitter.emit('praiseThread', _id, thread.uid);
+      Emitter.emit('newNotify', sourceUid);
 
       return;
     }
@@ -246,9 +247,6 @@ class ThreadController extends Controller {
     const updateRes = await this.ctx.model.Thread.update({ _id }, { $inc: { praises: -1 }, $pull: { praiseInfo: { avatarUrl: user.avatarUrl, uid: user._id } } });
     if (updateRes.ok) {
       this.ctx.body = { success: true };
-      // // 生成新点赞事件
-      // const Emitter = this.ctx.service.event.Emitter();
-      // Emitter.emit('praiseThread', _id, thread.uid);
 
       return;
     }
@@ -273,7 +271,7 @@ class ThreadController extends Controller {
       const sourceThread = await this.ctx.model.Thread.findOne({ _id });
       const sourceUid = sourceThread.uid;
       const sourceContent = sourceThread.content;
-      const notifyData = new this.ctx.model.Notify({ uid: sourceUid, hasRead: false, threadSourceId: _id, sourceContent, imgs: comment.imgs, commentInfo: { avatarUrl: user.avatarUrl, uid: user._id, content: comment.content, nickName: user.nickName }, commentId: newComment._id });
+      const notifyData = new this.ctx.model.Notify({ uid: sourceUid, hasRead: false, comment: true, threadSourceId: _id, sourceContent, imgs: comment.imgs, commentInfo: { avatarUrl: user.avatarUrl, uid: user._id, content: comment.content, nickName: user.nickName }, commentId: newComment._id });
       await notifyData.save();
       // 生成新通知事件
       Emitter.emit('newNotify', sourceUid);
@@ -294,7 +292,7 @@ class ThreadController extends Controller {
       const sourceComment = await this.ctx.model.Comment.findOne({ _id });
       const sourceUid = sourceComment.uid;
       const sourceContent = sourceComment.content;
-      const notifyData = new this.ctx.model.Notify({ uid: sourceUid, hasRead: false, commentSourceId: _id, sourceContent, imgs: comment.imgs, commentInfo: { avatarUrl: user.avatarUrl, uid: user._id, content: comment.content }, commentId: newComment._id });
+      const notifyData = new this.ctx.model.Notify({ uid: sourceUid, hasRead: false, comment: true, commentSourceId: _id, sourceContent, imgs: comment.imgs, commentInfo: { avatarUrl: user.avatarUrl, uid: user._id, content: comment.content }, commentId: newComment._id });
       await notifyData.save();
       // 生成新通知事件
       Emitter.emit('newNotify', sourceUid);

@@ -30,7 +30,6 @@ module.exports = app => {
     comments: Number, // 此条thread的评论总数
     commentInfo: [{ avatarUrl: String, uid: Schema.Types.ObjectId, nickName: String, content: String, hasread: Boolean }], // 评论的详细信息
     praises: Number, // 点赞数
-    notReadPraiseInfo: [{ avatarUrl: String, uid: Schema.Types.ObjectId, nickName: String }],
     praiseInfo: [{ avatarUrl: String, uid: Schema.Types.ObjectId, nickName: String }], // 同样直接赋值头像地址
     views: Number, // 此条thread的查看量，暂不实现
     themeText: String, // 此条thread所属的类别，中文描述

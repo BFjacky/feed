@@ -72,6 +72,14 @@ class UserController extends Controller {
       const updateRes2 = await this.ctx.model.User.update({ _id: uid }, { $push: { followers: { uid: user._id } } });
       const newUser = await this.ctx.model.User.findOne({ _id: user._id });
       this.ctx.body = { success: true, focus: newUser.focus };
+
+      // 生成一条通知
+      const sourceUid = uid; // 被关注目标 userId
+      const notifyData = new this.ctx.model.Notify({ uid: sourceUid, hasRead: false, focus: true, commentInfo: { avatarUrl: user.avatarUrl, uid: user._id, nickName: user.nickName } });
+      await notifyData.save();
+      // 生成新通知事件
+      const Emitter = this.ctx.service.event.Emitter();
+      Emitter.emit('newNotify', sourceUid);
       return;
     }
     this.ctx.body = { success: false };

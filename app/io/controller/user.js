@@ -25,22 +25,6 @@ module.exports = app => {
           this.ctx.socket.emit('res', notifies);
         }
       });
-      Emitter.on('praiseThread', async (threadId, sourceUid) => {
-        if (sourceUid == uid) {
-          // notify目标为此用户
-          const thread = await this.ctx.model.Thread.findOne({ _id: threadId });
-          console.log('发出了praiseThread sokcet');
-          this.ctx.socket.emit('praiseThread', thread);
-        }
-      });
-      Emitter.on('praiseComment', async (commentId, sourceUid) => {
-        if (sourceUid == uid) {
-          // notify目标为此用户
-          const comment = await this.ctx.model.Comment.findOne({ _id: commentId });
-          this.ctx.socket.emit('praiseComment', comment);
-        }
-      });
-
     }
     async adminLogin() {
       // this.ctx.socket.disconnect(true);

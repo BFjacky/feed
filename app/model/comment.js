@@ -28,7 +28,6 @@ module.exports = app => {
       sourceUrl: String, // 原图地址，上传到七牛后得到的地址
     }],
     praises: Number, // 点赞数
-    notReadPraiseInfo: [{ avatarUrl: String, uid: Schema.Types.ObjectId, nickName: String }],
     praiseInfo: [{ avatarUrl: String, uid: Schema.Types.ObjectId, nickName: String }], // 同样直接赋值头像地址
     views: Number, // 此条comment的查看量，暂不实现
 
