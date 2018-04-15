@@ -77,4 +77,6 @@ module.exports = app => {
   router.post('/user/cancelShields', controller.user.cancelShields);
 
   router.post('/user/readNotify', controller.user.readNotify);
+
+  router.post('/user/readPraise', controller.user.readPraise);
 };

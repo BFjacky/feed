@@ -25,6 +25,21 @@ module.exports = app => {
           this.ctx.socket.emit('res', notifies);
         }
       });
+      Emitter.on('praiseThread', async (threadId, sourceUid) => {
+        if (sourceUid == uid) {
+          // notify目标为此用户
+          const thread = await this.ctx.model.Thread.findOne({ _id: threadId });
+          console.log('发出了praiseThread sokcet');
+          this.ctx.socket.emit('praiseThread', thread);
+        }
+      });
+      Emitter.on('praiseComment', async (commentId, sourceUid) => {
+        if (sourceUid == uid) {
+          // notify目标为此用户
+          const comment = await this.ctx.model.Comment.findOne({ _id: commentId });
+          this.ctx.socket.emit('praiseComment', comment);
+        }
+      });
 
     }
     async adminLogin() {
@@ -35,7 +50,7 @@ module.exports = app => {
       if (argspswd === pswd) {
         this.ctx.socket.emit('loginResult', 'success');
         // 获得旧的还未被审核通过的thread
-        const hasntPassThread = await this.ctx.model.Thread.find({ isDelete: false || undefined, oficialCheckPass: undefined }).sort({ _id: -1 });
+        const hasntPassThread = await this.ctx.model.Thread.find({ isDelete: false || undefined, oficialCheckPass: undefined }).sort({ _id: 1 });
         console.log('登陆成功之后，获得之前所有未通过的threads');
         this.ctx.socket.emit('hasntPassThread', hasntPassThread);
         // 管理员登陆成功后，开始监听 新thread 的变化

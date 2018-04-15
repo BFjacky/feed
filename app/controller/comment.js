@@ -79,7 +79,7 @@ class CommentController extends Controller {
       this.ctx.body = { success: false, message: '请先登录' };
       return;
     }
-    // 判断该thread中是否已经有了该用户的点赞
+    // 判断该comment中是否已经有了该用户的点赞
     const comment = await this.ctx.model.Comment.findOne({ _id });
     const flag = this.ctx.service.utils.checkOnePraised(comment, user._id);
 
@@ -87,9 +87,15 @@ class CommentController extends Controller {
       this.ctx.body = { success: false, message: '该用户已经为此条comment点过赞了' };
       return;
     }
-    const updateRes = await this.ctx.model.Comment.update({ _id }, { $inc: { praises: 1 }, $push: { praiseInfo: { avatarUrl: user.avatarUrl, uid: user._id } } });
+    await this.ctx.model.Comment.update({ _id }, { $pull: { notReadPraiseInfo: { avatarUrl: user.avatarUrl, uid: user._id, nickName: user.nickName } } });
+    await this.ctx.model.Comment.update({ _id }, { $push: { notReadPraiseInfo: { avatarUrl: user.avatarUrl, uid: user._id, nickName: user.nickName } } });
+    const updateRes = await this.ctx.model.Comment.update({ _id }, { $inc: { praises: 1 }, $push: { praiseInfo: { avatarUrl: user.avatarUrl, uid: user._id, nickName: user.nickName } } });
     if (updateRes.ok) {
       this.ctx.body = { success: true };
+
+      // 生成新点赞事件
+      const Emitter = this.ctx.service.event.Emitter();
+      Emitter.emit('praiseComment', _id, comment.uid);
       return;
     }
     this.ctx.body = { success: false };
@@ -112,6 +118,11 @@ class CommentController extends Controller {
     const updateRes = await this.ctx.model.Comment.update({ _id }, { $inc: { praises: -1 }, $pull: { praiseInfo: { avatarUrl: user.avatarUrl, uid: user._id } } });
     if (updateRes.ok) {
       this.ctx.body = { success: true };
+
+      // // 生成新点赞事件
+      // const Emitter = this.ctx.service.event.Emitter();
+      // Emitter.emit('praiseComment', _id, comment.uid);
+
       return;
     }
     this.ctx.body = { success: false };

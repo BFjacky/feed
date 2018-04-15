@@ -158,6 +158,29 @@ class UserController extends Controller {
     }
     this.ctx.body = { success: true };
   }
+
+  async readPraise() {
+    const { threads, comments } = this.ctx.request.body;
+    console.log(threads, comments);
+    if (threads.length > 0) {
+      for (const thread of threads) {
+        for (const notReadPraiseInfo of thread.notReadPraiseInfo) {
+          const res = await this.ctx.model.Thread.update({ _id: thread._id }, { $pull: { notReadPraiseInfo: { _id: notReadPraiseInfo._id } } });
+          console.log('移除结果', res);
+        }
+      }
+    }
+    if (comments.length > 0) {
+      for (const comment of comments) {
+        for (const notReadPraiseInfo of comment.notReadPraiseInfo) {
+          const res = await this.ctx.model.Comment.update({ _id: comment._id }, { $pull: { notReadPraiseInfo: { _id: notReadPraiseInfo._id } } });
+          console.log('移除结果', res);
+        }
+      }
+    }
+    this.ctx.body = 'ok';
+  }
+
   async getOldNotifies() {
     // 按照时间排序
     const { user } = this.ctx;
