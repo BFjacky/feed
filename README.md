@@ -2,6 +2,8 @@
 
 > &#x1F393; [校友圈](https://neau-lib.xiaonei.io/feed/#/)
 
+**试用项目首先要关注微信测试号** 
+![测试号](assets/测试号.png)
 **项目预览地址：&#x1F449;** [https://neau-lib.xiaonei.io/feed/#/](https://neau-lib.xiaonei.io/feed/#/) 或 扫描二维码
 
 ![二维码](assets/feed.png)
