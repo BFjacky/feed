@@ -118,4 +118,4 @@ cnpm install
   + &#x1F4E7; 您也可以向我发送邮件以取得联系： 438376555@qq.com
 
 
-> &#x26A0; Tips：查看后端项目点这里[前端项目](https://github.com/BFjacky/feed-web.git)
+> &#x26A0; Tips：查看前端项目点这里[前端项目](https://github.com/BFjacky/feed-web.git)
