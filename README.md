@@ -14,13 +14,13 @@
 
 搭建出了如下所示的东农校友圈&#x1F308;：
 
-> ##### 1.二手交易信息Gif预览
+> ### 1.二手交易信息
 ![二手交易信息](assets/二手交易.gif)
 
-> ##### 2.分享的有趣视频Gif预览
+> ### 2.分享的有趣视频
 ![二手交易信息](assets/看视频.gif)
 
-> ##### 3.评论及个人信息Gif预览
+> ### 3.评论及个人信息
 ![二手交易信息](assets/评论.gif)
 
 > &#x26A0; Tips：还有很多其他的功能未能一一截成GIF动图
@@ -37,6 +37,18 @@
 ```
 
 > &#x26A0; Tips：应用将会运行在 [http://localhost:7001/](http://localhost:7001/)
+
+## 使用cnpm或淘宝镜像安装
+
+因部分资源下载缓慢，推荐使用淘宝镜像
+```bash
+npm --registry https://registry.npm.taobao.org install
+```
+或者使用cnpm安装
+```bash
+npm --registry https://registry.npm.taobao.org install cnpm -g
+cnpm install
+```
 
 ## 部署
 
