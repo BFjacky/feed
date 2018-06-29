@@ -5,7 +5,10 @@
 **试用项目首先要关注微信测试号** 
 ![测试号](assets/测试号.png) 
 
-**项目预览地址：&#x1F449;** [https://neau-lib.xiaonei.io/feed/#/](https://neau-lib.xiaonei.io/feed/#/) 或 扫描二维码
+**项目预览地址：&#x1F449;** [https://neau-lib.xiaonei.io/feed/#/](https://neau-lib.xiaonei.io/feed/#/) 或 **微信** 扫描二维码
+
+
+**温馨提示...本项目的使用场景仅为微信浏览器，未适配桌面端**
 
 ![二维码](assets/feed.png)
 
